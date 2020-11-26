@@ -17,6 +17,11 @@ const serve = {
                 "name":data
             }
         });
+    },
+    delProject(id){
+        return axios(`/project/${id}`, {
+            method: 'delete'
+        });
     }
 }
 

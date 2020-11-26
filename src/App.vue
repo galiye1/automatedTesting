@@ -44,7 +44,7 @@ export default {
   background-color: #fff;
   width: 100vw;
   display: flex;
-  align-self: center;
+  align-items: center;
 }
 .title{
   font-size: 34px;
