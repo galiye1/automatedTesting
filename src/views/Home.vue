@@ -1,136 +1,83 @@
 <template>
-    <div id="home">
-      <a-button class="btn" @click="createTestProject">新建测试项目</a-button>
-      <div class="testManageTable">
-        <span class="testManage">测试计划管理</span>
-        <a-table :data-source="this.$store.state.homeDataSource" :columns="columns" :pagination="false" :scroll="{ y: 590 | true }">
-          <template slot="projectName" slot-scope="text">
-            <router-link to="/test">{{text}}</router-link>
-          </template>
-          <template slot="operation" slot-scope="text, record">
-            <a-popconfirm
-              title="确认删除?"
-              @confirm="() => onDelete(record.key)"
-            >
-              <a href="javascript:;">删除</a>
-            </a-popconfirm>
-          </template>
-        </a-table>
-      </div>
-      <a-modal title="环境配置" :destroyOnClose="true" v-model="envSetModal" :maskClosable="false" @ok="envSetModalOk">
-        <a-tree-select search-placeholder="请选择浏览器" tree-checkable :show-checked-strategy="SHOW_PARENT" @change="onChange">
-          <a-tree-select-node title="windows" value="windows" key="0-0">
-            <a-tree-select-node title="windows chrome" value="windows chrome" key="0-0-0"></a-tree-select-node>
-            <a-tree-select-node title="windows firefox" value="windows firefox" key="0-0-1"></a-tree-select-node>
-            <a-tree-select-node title="windows ie" value="windows ie" key="0-0-2"></a-tree-select-node>
-            <a-tree-select-node title="windows opera" value="windows opera" key="0-0-3"></a-tree-select-node>
-          </a-tree-select-node>
-          <a-tree-select-node title="linux" value="linux" key="0-1">
-            <a-tree-select-node title="linux chrome" value="linux chrome" key="0-1-0"></a-tree-select-node>
-            <a-tree-select-node title="linux firefox" value="linux firefox" key="0-1-1"></a-tree-select-node>
-            <a-tree-select-node title="linux opera" value="linux opera" key="0-1-2"></a-tree-select-node>
-          </a-tree-select-node>
-        </a-tree-select>
-      </a-modal>
-      <a-modal title="项目名" :destroyOnClose="true" v-model="projectInputModal" @ok="projectInputModalOk">
-        <a-input v-model="projectName" placeholder="请输入项目名"/>
-      </a-modal>
+  <div class="table">
+    <div class="input">
+      <el-button @click="create">新增</el-button>
+      <el-button @click="del">删除</el-button>
     </div>
+    <el-table
+      :data="tableData"
+      stripe
+      style="width: 100%"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column type="selection" width="55"> </el-table-column>
+      <el-table-column prop="date" label="id" width="180"> </el-table-column>
+      <el-table-column prop="name" label="名称" width="180"> </el-table-column>
+      <el-table-column prop="address" label="地址"> </el-table-column>
+      <el-table-column label="绑定"
+        ><template slot-scope="scope">
+          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
+            >绑定设备</el-button
+          >
+          <el-button
+            size="mini"
+            @click="handleDelete(scope.$index, scope.row)"
+            >绑定数据</el-button
+          >
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
 
 <script>
-import { TreeSelect } from 'ant-design-vue'
-
 export default {
-  name: 'Home',
-  data () {
+  data() {
     return {
-      config: [], // 环境配置
-      envSetModal: false,
-      projectInputModal: false,
-      projectName: '',
-      columns: [
+      tableData: [
         {
-          title: '名称',
-          width: '10%',
-          dataIndex: 'projectName',
-          scopedSlots: { customRender: 'projectName' }
+          date: "2016-05-02",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1518 弄",
         },
         {
-          title: '当前状态',
-          dataIndex: 'currentState'
+          date: "2016-05-04",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1517 弄",
         },
         {
-          title: '通过率',
-          dataIndex: 'throughputRate'
+          date: "2016-05-01",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1519 弄",
         },
         {
-          title: '已测用例',
-          dataIndex: 'completeExample'
+          date: "2016-05-03",
+          name: "王小虎",
+          address: "上海市普陀区金沙江路 1516 弄",
         },
-        {
-          title: '操作',
-          dataIndex: 'operation',
-          scopedSlots: { customRender: 'operation' }
-        }
       ],
-      SHOW_PARENT: TreeSelect.SHOW_PARENT
-    }
+      multipleSelection: [],
+    };
   },
   methods: {
-    createTestProject () {
-      this.envSetModal = true
+    handleEdit(index, row) {
+      console.log(index, row)
     },
-    envSetModalOk () {
-      this.envSetModal = false
-      this.projectInputModal = true
+    handleDelete(index, row) {
+      console.log(index, row)
     },
-    projectInputModalOk () {
-      this.projectInputModal = false
-      this.$store.state.projectName = this.projectName
-      const projectObj = {
-        key: this.$store.state.projectId++,
-        projectName: this.projectName,
-        currentState: '未测试',
-        throughputRate: 0,
-        completeExample: '0/0',
-        config: this.config
-      }
-      this.$store.state.homeDataSource.push(projectObj)
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+      console.log(this.multipleSelection)
     },
-    onDelete (key) {
-      this.$store.state.homeDataSource = this.$store.state.homeDataSource.filter(item => item.key !== key)
+    del() {
+      console.log(this.multipleSelection)
     },
-    onChange (value) {
-      this.config = value
+    create(){
+        this.$emit("create")
     }
-  }
-}
+  },
+};
 </script>
-
-<style lang="less" scoped>
-  .btn{
-    float: right;
-    margin-bottom: 20px;
-    background-color: #007bff;
-  }
-  .testManageTable{
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    width: 100%;
-  }
-  .testManage{
-    width: 10%;
-  }
-  .ant-table-wrapper{
-    width: 90%;
-  }
-  .ant-select{
-    width: 100%;
-  }
-  a{
-    font-weight: normal !important;
-    color: #007bff !important;
-  }
+<style scope="scope">
 </style>
