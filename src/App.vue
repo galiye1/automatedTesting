@@ -1,7 +1,16 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-view />
+      <el-container>
+      <el-header>
+        <div class="title">
+          软件适配兼容性自动化测试系统
+        </div>
+      </el-header>
+      <el-main>
+        <router-view></router-view>
+      </el-main>
+    </el-container>
     </div>
   </div>
 </template>
@@ -22,8 +31,15 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  box-sizing: border-box;
 }
-
+.title{
+  font-size: 36px;
+  color: #383874;
+  font-weight: bolder;
+  display:flex;
+  margin-left: 2rem;
+}
 #nav {
   padding: 30px;
 
