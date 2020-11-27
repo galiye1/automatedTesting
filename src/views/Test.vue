@@ -200,7 +200,7 @@ export default {
       xhr.onload = () => {
         if (xhr.status === 200) {
           this.receiveData = JSON.parse(xhr.responseText)
-          this.$store.state.scriptData = xhr.responseText
+          this.$store.state.scriptData = this.receiveData
         }
       }
     },
