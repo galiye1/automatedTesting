@@ -1,29 +1,22 @@
 <template>
   <div class="process">
     <div class="process-left">
+      <div class="back" @click.stop="back"><img src="../assets/img/back.png" alt=""> 返回</div>
       <el-table
-        :data="tableData"
+        :data="tabelData"
         stripe
         style="width: 100%"
         :show-header="header"
       >
-        <el-table-column
-          ><template slot-scope="scope">
-            <div>1</div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          ><template slot-scope="scope">
-            <div>已测试</div>
-          </template>
-        </el-table-column>
+        <el-table-column prop="name" label="项目ID" class="name2"> </el-table-column>
+        <el-table-column prop="test" label="项目ID" class="test2"> </el-table-column>
       </el-table>
     </div>
     <div class="process-right">
       <div class="right-header">
         <div>操作系统：{{ detail.os }}</div>
-        <div>浏览器：{{ detail.browser }}</div>
-        <div>测试用例：123</div>
+        <div>浏览器：{{ testData[step]['browser'] }}</div>
+        <div>测试用例:{{tabelData[step]['name']}}</div>
       </div>
       <div class="right-content">
         <div
@@ -31,7 +24,12 @@
           :key="index"
           class="font-content"
         >
-          {{ JSON.stringify(item) }}
+          <span> 操作内容:{{item.content}}</span>
+          <span> 花费时间:{{item.costTime}}</span>
+          <span> 返回结果:{{item.message}}</span>
+          <span> 截图地址:{{item.screenShot}}</span>
+          <span > 测试结果:{{item.success}}</span>
+          <!-- <span v-show="!item.success" style="color:red"> 测试结果:{{item.success}}</span> -->
         </div>
       </div>
       <div class="right-bottom">
@@ -49,36 +47,17 @@
 export default {
   data() {
     return {
+      step: 0,
       header: false,
       startTime: "",
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄",
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
-        },
-      ],
+      tabelData:[],
       websock: null,
       useTime: "",
       detail: {
         total: 0,
         steps: [],
       },
+      testData: [],
     };
   },
   methods: {
@@ -90,21 +69,6 @@ export default {
       this.websock.onopen = this.websocketonopen;
       this.websock.onerror = this.websocketonerror;
       this.websock.onclose = this.websocketclose;
-
-      this.$axios.getDetail(1).then(
-        (res) => {
-          let test = {
-            browser: "chrome",
-          };
-          test.testCase = res.data.tests[0];
-          console.log(test);
-          this.$axios.proExecute(test).then(
-            (res) => {},
-            (reject) => {}
-          );
-        },
-        (reject) => {}
-      );
     },
     websocketonopen() {
       //连接建立之后执行send方法发送数据
@@ -117,29 +81,48 @@ export default {
       //连接建立失败重连
       this.initWebSocket();
     },
+    ceshi(data){
+      console.log(data)
+    },
     websocketonmessage(e) {
       //数据接收
       console.log(JSON.parse(e.data));
       this.detail = JSON.parse(e.data);
       this.useTime = new Date().getTime() - this.detail.startTime;
-
-      if (this.detail.costTime) {
+      if(JSON.parse(e.data)['message']=='连接成功'){
+        this.sendData(this.step)
+      }else{
+        this.detail.steps.forEach(item=>{
+          item.content
+        })
+      }
+      if (JSON.parse(e.data).costTime>0) {
         setTimeout(() => {
-          this.$axios.getDetail(1).then(
-            (res) => {
-              let test = {
-                browser: "chrome",
-              };
-              test.testCase = res.data.tests[1];
-              this.$axios.proExecute(test).then(
-                (res) => {},
-                (reject) => {}
-              );
-            },
-            (reject) => {}
-          );
+          this.step = this.step+1
+          if(this.step<this.testData.length){
+            this.sendData(this.step)
+          }else{
+            this.tabelData[this.step-1]['test']='测试完成'
+          }
         }, 2000);
       }
+    },
+    sendData(index) {
+      this.detail.steps = []
+      if(index == 0){
+        this.tabelData[0].test = '测试中'
+      }else{
+        this.tabelData[index-1].test = '测试完成'
+        this.tabelData[index].test = '测试中'
+      }
+      console.log(this.testData[index])
+      this.$axios.proExecute(this.testData[index]).then(
+        (res) => {},
+        (reject) => {}
+      );
+    },
+    back(){
+      this.$router.push("/Test")
     },
     websocketsend(Data) {
       //数据发送
@@ -150,8 +133,22 @@ export default {
       console.log("断开连接", e);
     },
   },
-  created() {
-    this.initWebSocket();
+  mounted() {
+    let test = this.$store.state.scriptData.tests;
+    this.testData = [];
+    this.$store.state.browserConfig.forEach((item) => {
+      this.$store.state.scriptData.tests.forEach((item2) => {
+        let data = {};
+        let tabel = {}
+        data.browser = item;
+        data.testCase = JSON.parse(JSON.stringify(item2)) ;
+        tabel.name = data.testCase.name
+        tabel.test = "未测试"
+        this.testData.push(data);
+        this.tabelData.push(tabel)
+      });
+    });
+    // this.initWebSocket()
   },
   destroyed() {
     if (this.websock) {
@@ -161,6 +158,33 @@ export default {
 };
 </script>
 <style scope="scope" lang="less">
+.process-left /deep/ .el-table .el-table__body .el-table__row td{
+  font-size: 20px;
+  letter-spacing: 1px;
+  overflow: hidden;
+  word-wrap: nowrap;
+  :first-child{
+    color:#383874;
+    font-weight: bolder;
+  }
+}
+.process-left{
+  position: relative;
+}
+.back{
+  position: absolute;
+  font-size: 25px;
+  font-weight: bolder;
+  letter-spacing: 1px;
+  bottom: 45px;
+  left: 25px;
+  z-index: 1000;
+  cursor: pointer;
+  img{
+    padding-bottom: 5px;
+  }
+}
+  
 .process {
   display: flex;
   justify-content: space-around;
@@ -192,6 +216,9 @@ export default {
       text-align: start;
       font-size: 25px;
       letter-spacing: 1px;
+      span{
+        margin-right: 10px;
+      }
     }
     overflow: scroll;
   }
