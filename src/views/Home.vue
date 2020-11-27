@@ -8,11 +8,11 @@
       <el-table-column prop="name" label="项目名称"> </el-table-column>
       <el-table-column label="绑定"
         ><template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-            >查看</el-button
+          <el-link type="primary" @click="handleEdit(scope.$index, scope.row)"
+            >查看</el-link
           >
-          <el-button size="mini" @click="handleDelete(scope.$index, scope.row)"
-            >删除</el-button
+          <el-link type="danger" @click="handleDelete(scope.$index, scope.row)"
+            >删除</el-link
           >
         </template>
       </el-table-column>
@@ -58,7 +58,7 @@ export default {
     },
     handleEdit(index, row) {
       console.log(index, row);
-      this.$router.push("/Process");
+      this.$router.push("/Test");
     },
     handleDelete(index, row) {
       console.log(row.id);
@@ -118,6 +118,9 @@ export default {
     letter-spacing: 1px;
     font-size: 20px;
   }
+}
+.table /deep/ .el-table .el-link{
+  margin-right: 10px;
 }
 .table /deep/ .el-dialog__wrapper {
   display: flex;

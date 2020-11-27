@@ -51,6 +51,7 @@ export default {
   color: #383874;
   font-weight: bolder;
   padding-left: 2rem;
+  cursor: pointer;
 }
 
 #nav {
