@@ -1,6 +1,7 @@
 <template>
   <div id="testExampleTable">
-    <a-table :data-source="this.$store.state.testExample[this.$route.query.index]" :columns="columns" :pagination="false" :scroll="{ y: 300 | true}">
+<!--    [this.$route.query.index]-->
+    <a-table :data-source="this.$store.state.testExample" :columns="columns" :pagination="false" :scroll="{ y: 300 | true}">
       <template slot="operation" slot-scope="text, record">
         <a-button class="readBtn">查看</a-button>
         <a-button class="deleteBtn" @click="deleteExampleData(record.key)">删除</a-button>
@@ -16,8 +17,8 @@ export default {
     return {
       columns: [
         {
-          title: '序号',
-          dataIndex: 'exampleId'
+          title: '用例名',
+          dataIndex: 'name'
         },
         {
           title: '机型',
@@ -29,7 +30,7 @@ export default {
         },
         {
           title: '系统',
-          dataIndex: 'system'
+          dataIndex: 'os'
         },
         {
           title: '浏览器',
@@ -37,11 +38,11 @@ export default {
         },
         {
           title: '开始时间',
-          dataIndex: 'stratTime'
+          dataIndex: 'startTime'
         },
         {
           title: '耗时',
-          dataIndex: 'exeTime'
+          dataIndex: 'costTime'
         },
         {
           title: '操作',

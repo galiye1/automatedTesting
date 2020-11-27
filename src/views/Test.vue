@@ -31,13 +31,8 @@
           </a-modal>
         </a-layout-sider>
         <a-layout-content>
-<!--          <h2 class="script">脚本</h2>-->
           <button class="uploadScript" @click="uploadScriptClick">导入脚本</button>
           <a-modal title="新建测试" v-model="addTest" :destroyOnClose="true" okText="确定" @ok="addTestBtn">
-<!--            <div class="testNameTitle">-->
-<!--              <div class="testName">名称</div>-->
-<!--              <a-input class="testNameInp"/>-->
-<!--            </div>-->
             <div class="scriptUploadTitle">
               <div class="scriptUpload">脚本</div>
               <a-upload class="upload" action="http://192.168.102.99:13500/project/upload/1" name="file"
@@ -47,11 +42,11 @@
             </div>
           </a-modal>
           <h1 class="tableTitle">测试报告</h1>
-          <a-table v-if="noPage" :columns="columns" :pagination="false" :scroll="{ y: 300 | true}">
+          <a-table class="noPage" v-if="noPage" :columns="columns" :pagination="false" :scroll="{ y: 300 | true}">
           </a-table>
-          <a-table  v-if="allPage" :data-source="this.allExampleData" :columns="columns" :pagination="false" :scroll="{ y: 300 | true}">
+          <a-table  class="allPage" v-if="allPage" :data-source="this.allExampleData" :columns="columns" :pagination="false" :scroll="{ y: 300 | true}">
           </a-table>
-          <router-view v-if="examplePage" />
+          <router-view/>
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -65,8 +60,8 @@ export default {
     return {
       columns: [
         {
-          title: '序号',
-          dataIndex: 'exampleId'
+          title: '用例名',
+          dataIndex: 'name'
         },
         {
           title: '机型',
@@ -78,7 +73,7 @@ export default {
         },
         {
           title: '系统',
-          dataIndex: 'system'
+          dataIndex: 'os'
         },
         {
           title: '浏览器',
@@ -90,7 +85,7 @@ export default {
         },
         {
           title: '耗时',
-          dataIndex: 'exeTime'
+          dataIndex: 'costTime'
         },
         {
           title: '操作',
@@ -98,7 +93,6 @@ export default {
           scopedSlots: { customRender: 'operation' }
         }
       ],
-      // addTestClickListener: '',
       exampleList: [
         {
           exampleName: '用例1'
@@ -124,9 +118,9 @@ export default {
       terminalOptions: ['本机'],
       browserOptions: ['chrome', 'firefox'],
       allModal: false, // 记录是否开启全部测试
-      noPage: true,
+      noPage: false,
       allPage: false,
-      examplePage: false,
+      examplePage: true,
       allExampleData: []
     }
   },
@@ -207,7 +201,21 @@ export default {
   },
   mounted () {
     this.$axios.getDetail(this.$store.state.projectId).then((res) => {
+      // this.examplePage = true
+      this.$store.state.testExample = []
       this.$store.state.projectName = res.data.name
+      for (let i = 0; i < res.data.reports.length; i++) {
+        const report = {
+          model: '机型',
+          cpu: 'cpu'
+        }
+        report.name = res.data.reports[i].name
+        report.os = res.data.reports[i].os
+        report.browser = res.data.reports[i].browser
+        report.startTime = res.data.reports[i].startTime
+        report.costTime = res.data.reports[i].costTime
+        this.$store.state.testExample.push(report)
+      }
       this.receiveData = res.data
     })
   }

@@ -19,7 +19,7 @@ const routes = [
     component: Test,
     children: [
       {
-        path: ':id',
+        path: '',
         component: TestExampleTable
       }
     ]
