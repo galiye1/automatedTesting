@@ -57,8 +57,10 @@ export default {
       );
     },
     handleEdit(index, row) {
-      console.log(index, row);
+      console.log(row.id)
+      this.$store.commit('setId',row.id)
       this.$router.push("/Test");
+      console.log(this.$store.state.projectId)
     },
     handleDelete(index, row) {
       console.log(row.id);
