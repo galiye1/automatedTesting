@@ -22,6 +22,17 @@ const serve = {
         return axios(`/project/${id}`, {
             method: 'delete'
         });
+    },
+    getDetail(id){
+        return axios(`/project/${id}`,{
+            method: 'get'
+        })
+    },
+    proExecute(data){
+        return axios('/test/execute',{
+            method: 'post',
+            data:data
+        })
     }
 }
 
