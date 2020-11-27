@@ -50,7 +50,9 @@
           <h1 class="tableTitle">测试报告</h1>
           <a-table v-if="noPage" :columns="columns" :pagination="false" :scroll="{ y: 300 | true}">
           </a-table>
-          <router-view />
+          <a-table  v-if="allPage" :data-source="this.allExampleData" :columns="columns" :pagination="false" :scroll="{ y: 300 | true}">
+          </a-table>
+          <router-view v-if="examplePage" />
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -113,7 +115,6 @@ export default {
       receiveData: {},
       playImg: require('../assets/img/stop.png'),
       allPlayImg: require('../assets/img/allPlay.png'),
-      noPage: true,
       allPlayBtn: true,
       envSet: false,
       addTest: false,
@@ -123,11 +124,18 @@ export default {
       },
       terminalOptions: ['本机'],
       browserOptions: ['360', 'xxx', 'C'],
-      allModal: false // 记录是否开启全部测试
+      allModal: false, // 记录是否开启全部测试
+      noPage: true,
+      allPage: false,
+      examplePage: false,
+      allExampleData: []
     }
   },
   methods: {
     runTest (event, index) {
+      this.noPage = false
+      this.examplePage = true
+      this.allPage = false
       if (event.target.getAttribute('src') === require('../assets/img/stop.png')) {
         event.target.setAttribute('src', require('../assets/img/play.png'))
         this.envSet = true
@@ -137,6 +145,9 @@ export default {
       this.exampleIndex = index
     },
     runAllTest (event) {
+      this.noPage = false
+      this.examplePage = false
+      this.allPage = true
       if (event.target.getAttribute('src') === require('../assets/img/allPlay.png')) {
         event.target.setAttribute('src', require('../assets/img/play.png'))
         this.playImg = require('../assets/img/play.png')
@@ -149,8 +160,20 @@ export default {
     },
     ok () {
       this.envSet = false
-      this.$router.push({ path: `/Test/Example${this.exampleIndex}`, query: { index: this.exampleIndex } })
-      this.noPage = false
+      if (this.allModal === true) {
+        this.allPage = true
+        this.noPage = false
+        this.examplePage = false
+        this.$store.state.testExample.map((item, index) => {
+          this.allExampleData = this.allExampleData.concat(item)
+        })
+        this.allModal = false
+      } else {
+        this.noPage = false
+        this.allPage = false
+        this.examplePage = true
+        this.$router.push({ path: `/Test/Example${this.exampleIndex}`, query: { index: this.exampleIndex } })
+      }
     },
     receiveScript (info) {
       if (info.file.status !== 'uploading') {
