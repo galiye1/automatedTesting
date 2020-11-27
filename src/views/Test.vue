@@ -173,6 +173,7 @@ export default {
         this.examplePage = true
         this.$router.push({ path: `/Test/Example${this.exampleIndex}`, query: { index: this.exampleIndex } })
       }
+      this.$router.push({ path: '/Process' })
     },
     uploadScriptClick () {
       this.addTest = true
