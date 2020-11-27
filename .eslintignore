@@ -1,6 +1,0 @@
-*.js,
-*.vue
-node_modules
-dist/
-test
-build/

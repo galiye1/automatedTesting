@@ -1,6 +1,10 @@
 <template>
   <div id="testExampleTable">
-    <a-table :data-source="this.$store.state.testExample[this.$route.query.index].testExampleData" :columns="columns" :pagination="false" :scroll="{ y: 160 | true }">
+    <a-table :data-source="this.$store.state.testExample[this.$route.query.index]" :columns="columns" :pagination="false" :scroll="{ y: 300 | true}">
+      <template slot="operation" slot-scope="text, record">
+        <a-button class="readBtn">查看</a-button>
+        <a-button class="deleteBtn" @click="deleteExampleData(record.key)">删除</a-button>
+      </template>
     </a-table>
   </div>
 </template>
@@ -12,22 +16,58 @@ export default {
     return {
       columns: [
         {
-          title: '指令',
-          dataIndex: 'command'
+          title: '序号',
+          dataIndex: 'exampleId'
         },
         {
-          title: '目标',
-          dataIndex: 'target'
+          title: '机型',
+          dataIndex: 'model'
         },
         {
-          title: '值',
-          dataIndex: 'value'
+          title: 'cpu',
+          dataIndex: 'cpu'
+        },
+        {
+          title: '系统',
+          dataIndex: 'system'
+        },
+        {
+          title: '浏览器',
+          dataIndex: 'browser'
+        },
+        {
+          title: '开始时间',
+          dataIndex: 'stratTime'
+        },
+        {
+          title: '耗时',
+          dataIndex: 'exeTime'
+        },
+        {
+          title: '操作',
+          dataIndex: 'operation',
+          scopedSlots: { customRender: 'operation' }
         }
       ]
+    }
+  },
+  methods: {
+    deleteExampleData (index) {
+      this.$store.state.testExample[this.$route.query.index].splice(index, 1)
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
+  .readBtn{
+    color: #383874;
+    background-color: white;
+    border: none;
+  }
+  .deleteBtn{
+    color: red;
+    background-color: white;
+    border: none;
+  }
 </style>

@@ -10,32 +10,49 @@ export default new Vuex.Store({
     projectNums: 0,
     homeDataSource: [],
     projectName: '',
-    testExample: [],
-    testExampleDataSource: [
+    testExample: [
       [
         {
           key: 0,
-          command: 0,
-          target: 0,
-          value: 0
+          exampleId: 1,
+          model: '',
+          cpu: '',
+          system: 'windows',
+          browser: 'chrome',
+          startTime: '',
+          exeTime: ''
         },
         {
-          key: 0,
-          command: 0,
-          target: 0,
-          value: 0
-        },
+          key: 1,
+          exampleId: 2,
+          model: '',
+          cpu: '',
+          system: 'windows',
+          browser: 'chrome',
+          startTime: '',
+          exeTime: ''
+        }
+      ],
+      [
         {
           key: 0,
-          command: 0,
-          target: 0,
-          value: 0
+          exampleId: 3,
+          model: '',
+          cpu: '',
+          system: 'windows',
+          browser: 'chrome',
+          startTime: '',
+          exeTime: ''
         },
         {
-          key: 0,
-          command: 0,
-          target: 0,
-          value: 0
+          key: 1,
+          exampleId: 4,
+          model: '',
+          cpu: '',
+          system: 'windows',
+          browser: 'chrome',
+          startTime: '',
+          exeTime: ''
         }
       ]
     ],
