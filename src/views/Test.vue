@@ -41,8 +41,7 @@
             <div class="scriptUploadTitle">
               <div class="scriptUpload">脚本</div>
               <a-upload class="upload" action="http://192.168.102.99:13500/project/upload/1" name="file"
-                         @change="receiveScript" :before-upload="beforeUpload"
-                        :withCredentials="withCredentials">
+                        :before-upload="beforeUpload">
                 <button class="uploadBtn">上传<a-icon type="upload" /></button>
               </a-upload>
             </div>
@@ -64,7 +63,6 @@ export default {
   name: 'Test',
   data () {
     return {
-      withCredentials:true,
       columns: [
         {
           title: '序号',
@@ -176,16 +174,6 @@ export default {
         this.$router.push({ path: `/Test/Example${this.exampleIndex}`, query: { index: this.exampleIndex } })
       }
     },
-    receiveScript (info) {
-      if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList)
-      }
-      if (info.file.status === 'done') {
-        this.$message.success(`${info.file.name} 上传成功`)
-      } else if (info.file.status === 'error') {
-        this.$message.error(`${info.file.name} 上传失败`)
-      }
-    },
     uploadScriptClick () {
       this.addTest = true
     },
@@ -218,8 +206,8 @@ export default {
   },
   mounted () {
     this.$axios.getDetail(this.$store.state.projectId).then((res) => {
-      console.log(res)
       this.$store.state.projectName = res.data.name
+      this.receiveData = res.data
     })
   }
 }
