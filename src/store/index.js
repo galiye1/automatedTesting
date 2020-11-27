@@ -200,6 +200,9 @@ export default new Vuex.Store({
     ]
   },
   mutations: {
+    setId(state,id){
+      state.projectId = id 
+    }
   },
   actions: {
   },
