@@ -1,13 +1,13 @@
 <template>
   <div id="test">
     <a-layout>
-      <a-layout-header>系统测试</a-layout-header>
+      <a-layout-header>{{ this.$store.state.projectName }}</a-layout-header>
       <a-layout class="middle">
         <a-layout-sider>
           <h2 class="testProName">测试名称</h2>
           <div class="exampleHeader">
             <div class="square"></div>
-            <div class="testExampleTitle">流程用例</div>
+            <div class="testExampleTitle">{{ this.$store.state.projectName }}</div>
             <img class="allPlay" ref="allPlayBtn" :src="allPlayImg" @click="runAllTest"/>
           </div>
           <div class="exampleList" v-for="(item, index) in receiveData.tests" :key="index">
@@ -42,7 +42,7 @@
               <div class="scriptUpload">脚本</div>
               <a-upload class="upload" action="http://192.168.102.99:13500/project/upload/1" name="file"
                          @change="receiveScript" :before-upload="beforeUpload"
-                        withCredentials="true">
+                        :withCredentials="withCredentials">
                 <button class="uploadBtn">上传<a-icon type="upload" /></button>
               </a-upload>
             </div>
@@ -64,6 +64,7 @@ export default {
   name: 'Test',
   data () {
     return {
+      withCredentials:true,
       columns: [
         {
           title: '序号',
@@ -123,7 +124,7 @@ export default {
         browser: []
       },
       terminalOptions: ['本机'],
-      browserOptions: ['360', 'xxx', 'C'],
+      browserOptions: ['chrome', 'firefox'],
       allModal: false, // 记录是否开启全部测试
       noPage: true,
       allPage: false,
@@ -192,12 +193,14 @@ export default {
       this.addTest = false
       const xhr = new XMLHttpRequest()
       const formData = new FormData()
+      const projectId = this.$store.state.projectId
       formData.append('file', this.file)
-      xhr.open('post', 'http://192.168.102.99:13500/project/upload/1')
+      xhr.open('post', 'http://192.168.102.99:13500/project/upload/' + projectId)
       xhr.send(formData)
       xhr.onload = () => {
         if (xhr.status === 200) {
           this.receiveData = JSON.parse(xhr.responseText)
+          this.$store.state.scriptData = xhr.responseText
         }
       }
     },
@@ -210,7 +213,14 @@ export default {
     },
     browserCheckbox (checkedList) {
       this.testAllSet.browser = checkedList
+      this.$store.state.browserConfig = this.testAllSet.browser
     }
+  },
+  mounted () {
+    this.$axios.getDetail(this.$store.state.projectId).then((res) => {
+      console.log(res)
+      this.$store.state.projectName = res.data.name
+    })
   }
 }
 </script>
