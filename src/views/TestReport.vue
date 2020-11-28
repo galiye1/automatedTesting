@@ -21,6 +21,9 @@
         </div>
       </div>
       <a-table :data-source="testResult" :columns="columns" :pagination="false" :scroll="{ y: 600 | true }">
+        <template slot="screenShot" slot-scope="text, record">
+          <img :src="record.screenShot" alt="截图"/>
+        </template>
       </a-table>
     </div>
   </div>
@@ -38,7 +41,8 @@ export default {
         },
         {
           title: '截图',
-          dataIndex: 'screenShot'
+          dataIndex: 'screenShot',
+          scopedSlots: { customRender: 'screenShot' }
         },
         {
           title: '耗时(ms)',
@@ -67,7 +71,11 @@ export default {
     this.$store.state.testExample.map((item, index) => {
       if (item.id == this.$route.query.exampleId) {
         for (let i = 0; i < item.steps.length; i++) {
-          item.steps[i].screenShot = 'http://127.0.0.1/13500' + item.steps[i].screenShot
+          if (item.steps[i].screenShot == null) {
+            item.steps[i].screenShot = ''
+          } else {
+            item.steps[i].screenShot = 'http://127.0.0.1/13500' + item.steps[i].screenShot
+          }
           if (item.steps[i].success == true) {
             item.steps[i].success = '是'
           } else {
