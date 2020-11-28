@@ -2,22 +2,18 @@
   <div class="process">
     <div class="process-left">
       <div class="back" @click.stop="back"><img src="../assets/img/back.png" alt=""> 返回</div>
-      <el-table
-        :data="tabelData"
-        stripe
-        style="width: 100%"
-        :show-header="header"
-        @cell-click="detailChose"
-      >
-        <el-table-column prop="name" label="项目ID" class="name2"> </el-table-column>
-        <el-table-column prop="test" label="项目ID" class="test2"> </el-table-column>
-      </el-table>
+      <ul :class="{'single':(pndex%2)==0}" v-for="(item , pndex) in tabelData " :key="pndex">
+        <li class="name" @click="detailChose(pndex)">{{item.name}}</li>
+        <li class="success" @click="detailChose(pndex)" v-show="item.test=='测试完成'"><img src="../assets/img/success.png" alt=""> 测试完成</li>
+        <li class="ing" @click="detailChose(pndex)" v-show="item.test=='测试中'"><img src="../assets/img/ing.png" alt=""></li>
+        <li class="wait" @click="detailChose(pndex)" v-show="item.test=='未测试'"><img src="../assets/img/wait.png" alt=""> 未测试</li>
+      </ul>
     </div>
     <div class="process-right">
       <div class="right-header">
         <div>操作系统：{{ detail.os }}</div>
-        <div>浏览器：{{ testData[step]['browser'] }}</div>
-        <div>测试用例:{{tabelData[step]['name']}}</div>
+        <div>浏览器：{{ detail['browser'] }}</div>
+        <div>测试用例:{{detail['name']}}</div>
       </div>
       <div class="right-content">
         <div
@@ -62,6 +58,25 @@ export default {
       stepsDetail: []
     }
   },
+  mounted () {
+    this.testData = []
+    this.$store.state.browserConfig.forEach((item) => {
+      this.$store.state.scriptDataExample.forEach((item2) => {
+        const data = {}
+        const tabel = {}
+        data.browser = item
+        data.testCase = JSON.parse(JSON.stringify(item2))
+        tabel.name = data.testCase.name
+        tabel.test = '未测试'
+
+        //生成测试数据
+        this.testData.push(data)
+        //生成渲染数据
+        this.tabelData.push(tabel)
+      })
+    })
+    this.initWebSocket()
+  },
   methods: {
     initWebSocket () {
       // 初始化weosocket
@@ -89,7 +104,9 @@ export default {
 
       if (JSON.parse(e.data).message == '连接成功') {
         this.sendData(this.step)
-      } else if (JSON.parse(e.data).costTime > 0) {
+      } else if (JSON.parse(e.data).endTime > 0) {
+        this.stepsDetail.push(JSON.parse(e.data))
+        this.useTime = JSON.parse(e.data).costTime
         setTimeout(() => {
           this.step = this.step + 1
           if (this.step < this.testData.length) {
@@ -100,11 +117,11 @@ export default {
         }, 2000)
       }else {
         this.detail = JSON.parse(e.data)
-        this.useTime = new Date().getTime() - this.detail.startTime
       }
     },
-    detailChose(row, column, cell, event){
-      console(row)
+    detailChose(index){
+      this.detail = this.stepsDetail[index]
+      this.useTime = this.stepsDetail[index]['costTime']
     },
     sendData (index) {
       this.detail.steps = []
@@ -112,7 +129,9 @@ export default {
         this.tabelData[0].test = '测试中'
       } else {
         this.tabelData[index - 1].test = '测试完成'
-        this.tabelData[index].test = '测试中'
+        if(this.tabelData[index]){
+          this.tabelData[index].test = '测试中'
+        }
       }
       this.$axios.proExecute(this.testData[index]).then(
         (res) => {},
@@ -131,22 +150,7 @@ export default {
       console.log('断开连接', e)
     }
   },
-  mounted () {
-    this.testData = []
-    this.$store.state.browserConfig.forEach((item) => {
-      this.$store.state.scriptDataExample.forEach((item2) => {
-        const data = {}
-        const tabel = {}
-        data.browser = item
-        data.testCase = JSON.parse(JSON.stringify(item2))
-        tabel.name = data.testCase.name
-        tabel.test = '未测试'
-        this.testData.push(data)
-        this.tabelData.push(tabel)
-      })
-    })
-    this.initWebSocket()
-  },
+  
   destroyed () {
     if (this.websock) {
       this.websock.close() // 离开路由之后断开websocket连接
@@ -164,9 +168,6 @@ export default {
     color:#383874;
     font-weight: bolder;
   }
-}
-.process-left{
-  position: relative;
 }
 .back{
   position: absolute;
@@ -188,7 +189,34 @@ export default {
   margin-top: 35px;
 }
 .process-left {
+  position: relative;
   width: 224px;
+  .single{
+    background-color: #fff;
+  }
+  ul{
+    height: 54px;
+    padding:0;
+    margin: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 20px;
+    font-weight: bolder;
+    li{
+      cursor: pointer;
+      width: 50%;
+      list-style: none;
+      text-align: center;
+    }
+    .success{
+      color:#15b769
+    }
+    .wait{
+      color: #bbbbbb;
+    }
+  }
 }
 .process-right {
   color: #383874;
