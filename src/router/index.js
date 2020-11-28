@@ -14,7 +14,7 @@ const routes = [
     component: Home
   },
   {
-    path: '/Test',
+    path: '/test',
     name: 'Test',
     component: Test,
     children: [
@@ -25,7 +25,7 @@ const routes = [
     ]
   },
   {
-    path: '/TestReport',
+    path: '/testReport',
     name: 'TestReport',
     component: TestReport
   },

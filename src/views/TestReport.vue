@@ -8,19 +8,19 @@
     </router-link>
     <div class="content">
       <h1>测试结果</h1>
-      <span class="icon"></span><span>基础信息</span>
-      <div>
+      <div class="infoTitle">
+        <div class="icon"></div>
+        <div class="baseInfo">基础信息</div>
+      </div>
+      <div class="mainLine">
         <div class="firstLine">
-          <span>机型：xxx</span><span>机型：xxx</span><span>机型：xxx</span><span>机型：xxx</span>
+          <span class="detailInfo">用例名：{{name}}</span><span class="detailInfo">系统：{{os}}</span><span class="detailInfo">浏览器：{{browser}}</span><span class="detailInfo">开始时间：{{startTime}}</span>
         </div>
         <div class="secondLine">
-          <span>机型：xxx</span><span>机型：xxx</span><span>机型：xxx</span><span>机型：xxx</span>
+          <span class="detailInfo">耗时：{{costTime}}</span>
         </div>
       </div>
-      <a-table :data-source="this.$store.state.testReport" :columns="columns" :pagination="false" :scroll="{ y: 616 | true }">
-        <template slot="testResult" slot-scope="text, record">
-          <button class="read" @click="readResultBtn(record)">查看</button>
-        </template>
+      <a-table :data-source="testResult" :columns="columns" :pagination="false" :scroll="{ y: 600 | true }">
       </a-table>
     </div>
   </div>
@@ -31,57 +31,58 @@ export default {
   name: 'TestReport',
   data () {
     return {
-      testResult: false,
       columns: [
         {
-          title: '用例名',
-          dataIndex: 'testExampleName'
-        },
-        {
-          title: '系统',
-          dataIndex: 'system'
-        },
-        {
-          title: '浏览器',
-          dataIndex: 'browser'
-        },
-        {
-          title: '开始时间',
-          dataIndex: 'startTime'
-        },
-        {
-          title: '结束时间',
-          dataIndex: 'endTime'
-        },
-        {
-          title: '测试结果',
-          dataIndex: 'testResult',
-          scopedSlots: { customRender: 'testResult' }
-        }
-      ],
-      columnsResult: [
-        {
-          title: '步骤',
-          dataIndex: 'progress'
+          title: '地址',
+          dataIndex: 'content'
         },
         {
           title: '截图',
-          dataIndex: 'img'
+          dataIndex: 'screenShot'
+        },
+        {
+          title: '耗时(ms)',
+          dataIndex: 'costTime'
+        },
+        {
+          title: '是否成功',
+          dataIndex: 'success'
         },
         {
           title: '信息',
-          dataIndex: 'info'
+          dataIndex: 'message'
         }
-      ]
+      ],
+      testResult: [],
+      name: '',
+      os: '',
+      browser: '',
+      startTime: '',
+      costTime: ''
     }
   },
   methods: {
-    readResultBtn (record) {
-      this.testResult = true
-    },
-    ok () {
-      this.testResult = false
-    }
+  },
+  created () {
+    this.$store.state.testExample.map((item, index) => {
+      if (item.id == this.$route.query.exampleId) {
+        for (let i = 0; i < item.steps.length; i++) {
+          if (item.steps[i].success == true) {
+            item.steps[i].success = '是'
+          } else {
+            item.steps[i].success = '否'
+          }
+        }
+        this.testResult = item.steps
+        this.name = item.name
+        this.os = item.os
+        this.browser = item.browser
+        this.startTime = item.startTime
+        this.costTime = item.costTime
+      }
+    })
+  },
+  mounted () {
   }
 }
 </script>
@@ -90,5 +91,58 @@ export default {
   .return{
     text-align: left;
     margin-left: 3%;
+    color: #383874;
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+  .content{
+    height: 100%;
+    width: 80%;
+    margin-top: 20px;
+    margin-left: 10%;
+    text-align: left;
+  }
+  h1{
+    color: #383874;
+    font-weight: bold;
+  }
+  .infoTitle{
+    margin-top: 10px;
+  }
+  .icon{
+    display: inline-block;
+    height: 10px;
+    width: 5px;
+    background-color: #383874;
+  }
+  .baseInfo{
+    margin-left: 5px;
+    color: #383874;
+    display: inline-block;
+  }
+  .mainLine{
+    margin-top: 10px;
+    color: #383874;
+  }
+  .secondLine{
+    margin-top: 10px;
+  }
+  .detailInfo{
+    width: 200px;
+    margin-right: 100px;
+  }
+  .ant-table-wrapper{
+    margin-top: 20px;
+  }
+  /deep/ .ant-table-header{
+    background-color: #383874;
+  }
+  /deep/ .ant-table-wrapper .ant-table-thead th{
+    text-align: center;
+    background-color: #383874;
+    color: white;
+  }
+  /deep/ .ant-table-wrapper td{
+    text-align: center;
   }
 </style>

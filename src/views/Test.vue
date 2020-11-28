@@ -130,10 +130,8 @@ export default {
       this.examplePage = true
       this.allPage = false
       if (event.target.getAttribute('src') === require('../assets/img/stop.png')) {
-        // event.target.setAttribute('src', require('../assets/img/play.png'))
         this.envSet = true
       } else if (event.target.getAttribute('src') === require('../assets/img/play.png')) {
-        // event.target.setAttribute('src', require('../assets/img/stop.png'))
       }
       this.exampleIndex = index
       this.$store.state.scriptDataExample = []
@@ -144,13 +142,9 @@ export default {
       this.examplePage = false
       this.allPage = false
       if (event.target.getAttribute('src') === require('../assets/img/allPlay.png')) {
-        // event.target.setAttribute('src', require('../assets/img/play.png'))
-        // this.playImg = require('../assets/img/play.png')
         this.allModal = true
         this.envSet = true
       } else if (event.target.getAttribute('src') === require('../assets/img/play.png')) {
-        // event.target.setAttribute('src', require('../assets/img/allPlay.png'))
-        // this.playImg = require('../assets/img/stop.png')
       }
       this.$store.state.scriptDataExample = []
       this.$store.state.scriptData.tests.map((item, index) => {
@@ -171,7 +165,6 @@ export default {
         this.noPage = false
         this.allPage = false
         this.examplePage = true
-        // this.$router.push({ path: `/Test/Example${this.exampleIndex}`, query: { index: this.exampleIndex } })
       }
       if (this.$store.state.browserConfig.length > 0) {
         this.$router.push({ path: '/Process' })
@@ -219,11 +212,14 @@ export default {
           model: '机型',
           cpu: 'cpu'
         }
+        report.key = i
+        report.id = res.data.reports[i].id
         report.name = res.data.reports[i].name
         report.os = res.data.reports[i].os
         report.browser = res.data.reports[i].browser
         report.startTime = res.data.reports[i].startTime
         report.costTime = res.data.reports[i].costTime
+        report.steps = res.data.reports[i].steps
         this.$store.state.testExample.push(report)
       }
       this.receiveData = res.data
