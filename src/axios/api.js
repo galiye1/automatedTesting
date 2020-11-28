@@ -33,6 +33,11 @@ const serve = {
       method: 'post',
       data: data
     })
+  },
+  deleteExample (id) {
+    return axios(`report/${id}`, {
+      method: 'delete'
+    })
   }
 }
 

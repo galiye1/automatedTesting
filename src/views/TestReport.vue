@@ -67,6 +67,7 @@ export default {
     this.$store.state.testExample.map((item, index) => {
       if (item.id == this.$route.query.exampleId) {
         for (let i = 0; i < item.steps.length; i++) {
+          item.steps[i].screenShot = 'http://127.0.0.1/13500' + item.steps[i].screenShot
           if (item.steps[i].success == true) {
             item.steps[i].success = '是'
           } else {

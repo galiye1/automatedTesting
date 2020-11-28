@@ -4,7 +4,7 @@
     <a-table :data-source="this.$store.state.testExample" :columns="columns" :pagination="false" :scroll="{ y: 300 | true}">
       <template slot="operation" slot-scope="text, record">
         <a-button class="readBtn" @click="readTestResult(record.id)">查看</a-button>
-        <a-button class="deleteBtn" @click="deleteExampleData(record.key)">删除</a-button>
+        <a-button class="deleteBtn" @click="deleteExampleData(record.key, record.id)">删除</a-button>
       </template>
     </a-table>
   </div>
@@ -53,8 +53,9 @@ export default {
     }
   },
   methods: {
-    deleteExampleData (index) {
-      this.$store.state.testExample[this.$route.query.index].splice(index, 1)
+    deleteExampleData (key, exampleId) {
+      this.$store.state.testExample.splice(key, 1)
+      this.$axios.deleteExample(exampleId)
     },
     readTestResult (exampleId) {
       this.$router.push({ path: '/testReport', query: { exampleId } })

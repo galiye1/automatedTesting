@@ -135,7 +135,7 @@ export default {
       }
       this.exampleIndex = index
       this.$store.state.scriptDataExample = []
-      this.$store.state.scriptDataExample.push(this.$store.state.scriptData.tests[index])
+      this.$store.state.scriptDataExample.push(this.receiveData.tests[index])
     },
     runAllTest (event) {
       this.noPage = false
@@ -147,7 +147,7 @@ export default {
       } else if (event.target.getAttribute('src') === require('../assets/img/play.png')) {
       }
       this.$store.state.scriptDataExample = []
-      this.$store.state.scriptData.tests.map((item, index) => {
+      this.receiveData.tests.map((item, index) => {
         this.$store.state.scriptDataExample.push(item)
       })
     },
@@ -177,18 +177,18 @@ export default {
     },
     addTestBtn () {
       this.addTest = false
-      const xhr = new XMLHttpRequest()
-      const formData = new FormData()
-      const projectId = this.$store.state.projectId
-      formData.append('file', this.file)
-      xhr.open('post', 'http://192.168.102.99:13500/project/upload/' + projectId)
-      xhr.send(formData)
-      xhr.onload = () => {
-        if (xhr.status === 200) {
-          this.receiveData = JSON.parse(xhr.responseText)
-          this.$store.state.scriptData = this.receiveData
-        }
-      }
+      // const xhr = new XMLHttpRequest()
+      // const formData = new FormData()
+      // const projectId = this.$store.state.projectId
+      // formData.append('file', this.file)
+      // xhr.open('post', 'http://192.168.102.99:13500/project/upload/' + projectId)
+      // xhr.send(formData)
+      // xhr.onload = () => {
+      //   if (xhr.status === 200) {
+      //     this.receiveData = JSON.parse(xhr.responseText)
+      //     this.$store.state.scriptData = this.receiveData
+      //   }
+      // }
     },
     beforeUpload (file) {
       this.file = file
@@ -299,6 +299,9 @@ export default {
     background-color: #383874;
   }
   .testExampleTitle{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     margin-left: 10px;
     margin-right: 30px;
   }
