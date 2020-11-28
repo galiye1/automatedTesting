@@ -35,7 +35,7 @@
           <a-modal title="新建测试" v-model="addTest" :destroyOnClose="true" okText="确定" @ok="addTestBtn">
             <div class="scriptUploadTitle">
               <div class="scriptUpload">脚本</div>
-              <a-upload class="upload" action="http://192.168.102.99:13500/project/upload/1" name="file"
+              <a-upload class="upload" action="http://127.0.0.1:13500/project/upload/1" name="file"
                         :before-upload="beforeUpload">
                 <button class="uploadBtn">上传<a-icon type="upload" /></button>
               </a-upload>

@@ -23,7 +23,7 @@ export default function (url, {
   method = 'post',
   timeout = 1000000,
   data = {},
-  baseURL = 'http://192.168.102.99:13500',
+  baseURL = 'http://127.0.0.1:13500',
   headers = {
     'Content-Type': 'application/json;charset=UTF-8'
   },

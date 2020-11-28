@@ -80,7 +80,7 @@ export default {
   methods: {
     initWebSocket () {
       // 初始化weosocket
-      const wsuri = 'ws://192.168.102.99:13500/socket/1'
+      const wsuri = 'ws://127.0.0.1:13500/socket/1'
       this.websock = new WebSocket(wsuri)
       this.websock.onmessage = this.websocketonmessage
       this.websock.onopen = this.websocketonopen
@@ -150,7 +150,7 @@ export default {
       console.log('断开连接', e)
     }
   },
-  
+
   destroyed () {
     if (this.websock) {
       this.websock.close() // 离开路由之后断开websocket连接

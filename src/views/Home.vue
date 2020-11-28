@@ -6,7 +6,7 @@
     <el-table :data="tableData" stripe style="width: 100%">
       <el-table-column prop="id" label="项目ID"> </el-table-column>
       <el-table-column prop="name" label="项目名称"> </el-table-column>
-      <el-table-column label="绑定"
+      <el-table-column label="操作"
         ><template slot-scope="scope">
           <el-link type="primary" @click="handleEdit(scope.$index, scope.row)"
             >查看</el-link

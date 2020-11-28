@@ -37,6 +37,8 @@ const routes = [
 ]
 
 const router = new VueRouter({
+  base: '/dist',
+  mode: 'hash',
   routes
 })
 
