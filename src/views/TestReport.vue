@@ -1,16 +1,28 @@
 <template>
   <div id="testReport">
-    <h1>测试报告</h1>
-    <a-table :data-source="this.$store.state.testReport" :columns="columns" :pagination="false" :scroll="{ y: 616 | true }">
-      <template slot="testResult" slot-scope="text, record">
-        <button class="read" @click="readResultBtn(record)">查看</button>
-      </template>
-    </a-table>
-    <a-modal title="测试结果" v-model="testResult" :destroyOnClose="true" :footer="null" @ok="ok">
-      <a-table class="testResultTable" :data-source="this.$store.state.testResult" :columns="columnsResult"
-               :pagination="false" :scroll="{ y: 268 | true }">
+    <router-link to="/Test">
+      <div class="return">
+        <img src="../assets/img/return.png" />
+        <span>返回</span>
+      </div>
+    </router-link>
+    <div class="content">
+      <h1>测试结果</h1>
+      <span class="icon"></span><span>基础信息</span>
+      <div>
+        <div class="firstLine">
+          <span>机型：xxx</span><span>机型：xxx</span><span>机型：xxx</span><span>机型：xxx</span>
+        </div>
+        <div class="secondLine">
+          <span>机型：xxx</span><span>机型：xxx</span><span>机型：xxx</span><span>机型：xxx</span>
+        </div>
+      </div>
+      <a-table :data-source="this.$store.state.testReport" :columns="columns" :pagination="false" :scroll="{ y: 616 | true }">
+        <template slot="testResult" slot-scope="text, record">
+          <button class="read" @click="readResultBtn(record)">查看</button>
+        </template>
       </a-table>
-    </a-modal>
+    </div>
   </div>
 </template>
 
@@ -75,9 +87,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  .read{
-    border: none;
-    background-color: white;
-    color: #007bff;
+  .return{
+    text-align: left;
+    margin-left: 3%;
   }
 </style>

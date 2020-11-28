@@ -7,6 +7,7 @@
         stripe
         style="width: 100%"
         :show-header="header"
+        @cell-click="detailChose"
       >
         <el-table-column prop="name" label="项目ID" class="name2"> </el-table-column>
         <el-table-column prop="test" label="项目ID" class="test2"> </el-table-column>
@@ -45,117 +46,113 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       step: 0,
       header: false,
-      startTime: "",
-      tabelData:[],
+      startTime: '',
+      tabelData: [],
       websock: null,
-      useTime: "",
+      useTime: '',
       detail: {
         total: 0,
-        steps: [],
+        steps: []
       },
       testData: [],
-    };
+      stepsDetail: []
+    }
   },
   methods: {
-    initWebSocket() {
-      //初始化weosocket
-      const wsuri = "ws://192.168.102.99:13500/socket/1";
-      this.websock = new WebSocket(wsuri);
-      this.websock.onmessage = this.websocketonmessage;
-      this.websock.onopen = this.websocketonopen;
-      this.websock.onerror = this.websocketonerror;
-      this.websock.onclose = this.websocketclose;
+    initWebSocket () {
+      // 初始化weosocket
+      const wsuri = 'ws://192.168.102.99:13500/socket/1'
+      this.websock = new WebSocket(wsuri)
+      this.websock.onmessage = this.websocketonmessage
+      this.websock.onopen = this.websocketonopen
+      this.websock.onerror = this.websocketonerror
+      this.websock.onclose = this.websocketclose
     },
-    websocketonopen() {
-      //连接建立之后执行send方法发送数据
-      let actions = { test: "12345" };
-      let date = new Date();
-      this.startTime = date.toLocaleDateString();
-      this.websocketsend(JSON.stringify(actions));
+    websocketonopen () {
+      // 连接建立之后执行send方法发送数据
+      const actions = { test: '12345' }
+      const date = new Date()
+      this.startTime = date.toLocaleDateString()
+      this.websocketsend(JSON.stringify(actions))
     },
-    websocketonerror() {
-      //连接建立失败重连
-      this.initWebSocket();
+    websocketonerror () {
+      // 连接建立失败重连
+      this.initWebSocket()
     },
-    ceshi(data){
-      console.log(data)
-    },
-    websocketonmessage(e) {
-      //数据接收
-      console.log(JSON.parse(e.data));
-      this.detail = JSON.parse(e.data);
-      this.useTime = new Date().getTime() - this.detail.startTime;
-      if(JSON.parse(e.data)['message']=='连接成功'){
+    websocketonmessage (e) {
+      // 数据接收
+      console.log(JSON.parse(e.data))
+
+      if (JSON.parse(e.data).message == '连接成功') {
         this.sendData(this.step)
-      }else{
-        this.detail.steps.forEach(item=>{
-          item.content
-        })
-      }
-      if (JSON.parse(e.data).costTime>0) {
+      } else if (JSON.parse(e.data).costTime > 0) {
         setTimeout(() => {
-          this.step = this.step+1
-          if(this.step<this.testData.length){
+          this.step = this.step + 1
+          if (this.step < this.testData.length) {
             this.sendData(this.step)
-          }else{
-            this.tabelData[this.step-1]['test']='测试完成'
+          } else {
+            this.tabelData[this.step - 1].test = '测试完成'
           }
-        }, 2000);
+        }, 2000)
+      }else {
+        this.detail = JSON.parse(e.data)
+        this.useTime = new Date().getTime() - this.detail.startTime
       }
     },
-    sendData(index) {
+    detailChose(row, column, cell, event){
+      console(row)
+    },
+    sendData (index) {
       this.detail.steps = []
-      if(index == 0){
+      if (index == 0) {
         this.tabelData[0].test = '测试中'
-      }else{
-        this.tabelData[index-1].test = '测试完成'
+      } else {
+        this.tabelData[index - 1].test = '测试完成'
         this.tabelData[index].test = '测试中'
       }
-      console.log(this.testData[index])
       this.$axios.proExecute(this.testData[index]).then(
         (res) => {},
         (reject) => {}
-      );
+      )
     },
-    back(){
-      this.$router.push("/Test")
+    back () {
+      this.$router.push('/Test')
     },
-    websocketsend(Data) {
-      //数据发送
-      this.websock.send(Data);
+    websocketsend (Data) {
+      // 数据发送
+      this.websock.send(Data)
     },
-    websocketclose(e) {
-      //关闭
-      console.log("断开连接", e);
-    },
-  },
-  mounted() {
-    let test = this.$store.state.scriptData.tests;
-    this.testData = [];
-    this.$store.state.browserConfig.forEach((item) => {
-      this.$store.state.scriptData.tests.forEach((item2) => {
-        let data = {};
-        let tabel = {}
-        data.browser = item;
-        data.testCase = JSON.parse(JSON.stringify(item2)) ;
-        tabel.name = data.testCase.name
-        tabel.test = "未测试"
-        this.testData.push(data);
-        this.tabelData.push(tabel)
-      });
-    });
-    // this.initWebSocket()
-  },
-  destroyed() {
-    if (this.websock) {
-      this.websock.close(); //离开路由之后断开websocket连接
+    websocketclose (e) {
+      // 关闭
+      console.log('断开连接', e)
     }
   },
-};
+  mounted () {
+    this.testData = []
+    this.$store.state.browserConfig.forEach((item) => {
+      this.$store.state.scriptDataExample.forEach((item2) => {
+        const data = {}
+        const tabel = {}
+        data.browser = item
+        data.testCase = JSON.parse(JSON.stringify(item2))
+        tabel.name = data.testCase.name
+        tabel.test = '未测试'
+        this.testData.push(data)
+        this.tabelData.push(tabel)
+      })
+    })
+    this.initWebSocket()
+  },
+  destroyed () {
+    if (this.websock) {
+      this.websock.close() // 离开路由之后断开websocket连接
+    }
+  }
+}
 </script>
 <style scope="scope" lang="less">
 .process-left /deep/ .el-table .el-table__body .el-table__row td{
@@ -184,7 +181,7 @@ export default {
     padding-bottom: 5px;
   }
 }
-  
+
 .process {
   display: flex;
   justify-content: space-around;

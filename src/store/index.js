@@ -12,6 +12,7 @@ export default new Vuex.Store({
     projectName: '',
     testExample: [],
     scriptData: {},
+    scriptDataExample: [],
     browserConfig: []
   },
   mutations: {

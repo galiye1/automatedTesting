@@ -130,26 +130,32 @@ export default {
       this.examplePage = true
       this.allPage = false
       if (event.target.getAttribute('src') === require('../assets/img/stop.png')) {
-        event.target.setAttribute('src', require('../assets/img/play.png'))
+        // event.target.setAttribute('src', require('../assets/img/play.png'))
         this.envSet = true
       } else if (event.target.getAttribute('src') === require('../assets/img/play.png')) {
-        event.target.setAttribute('src', require('../assets/img/stop.png'))
+        // event.target.setAttribute('src', require('../assets/img/stop.png'))
       }
       this.exampleIndex = index
+      this.$store.state.scriptDataExample = []
+      this.$store.state.scriptDataExample.push(this.$store.state.scriptData.tests[index])
     },
     runAllTest (event) {
       this.noPage = false
       this.examplePage = false
-      this.allPage = true
+      this.allPage = false
       if (event.target.getAttribute('src') === require('../assets/img/allPlay.png')) {
-        event.target.setAttribute('src', require('../assets/img/play.png'))
-        this.playImg = require('../assets/img/play.png')
+        // event.target.setAttribute('src', require('../assets/img/play.png'))
+        // this.playImg = require('../assets/img/play.png')
         this.allModal = true
         this.envSet = true
       } else if (event.target.getAttribute('src') === require('../assets/img/play.png')) {
-        event.target.setAttribute('src', require('../assets/img/allPlay.png'))
-        this.playImg = require('../assets/img/stop.png')
+        // event.target.setAttribute('src', require('../assets/img/allPlay.png'))
+        // this.playImg = require('../assets/img/stop.png')
       }
+      this.$store.state.scriptDataExample = []
+      this.$store.state.scriptData.tests.map((item, index) => {
+        this.$store.state.scriptDataExample.push(item)
+      })
     },
     ok () {
       this.envSet = false
@@ -165,9 +171,13 @@ export default {
         this.noPage = false
         this.allPage = false
         this.examplePage = true
-        this.$router.push({ path: `/Test/Example${this.exampleIndex}`, query: { index: this.exampleIndex } })
+        // this.$router.push({ path: `/Test/Example${this.exampleIndex}`, query: { index: this.exampleIndex } })
       }
-      this.$router.push({ path: '/Process' })
+      if (this.$store.state.browserConfig.length > 0) {
+        this.$router.push({ path: '/Process' })
+      } else {
+        alert('请配置浏览器')
+      }
     },
     uploadScriptClick () {
       this.addTest = true
