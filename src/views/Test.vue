@@ -287,6 +287,7 @@ export default {
     border-radius: 5%;
     border: none;
     background-color: #383874;
+    cursor: pointer;
   }
   .exampleHeader{
     height: 30px;
@@ -305,6 +306,10 @@ export default {
     background-color: #383874;
   }
   .testExampleTitle{
+    &:hover {
+      cursor: pointer;
+      color: deepskyblue;
+    }
     width: 70%;
     margin-left: 5px;
     margin-right: 5px;
@@ -334,6 +339,10 @@ export default {
     border-radius: 50%;
   }
   .exampleName{
+    &:hover {
+      color: deepskyblue;
+      cursor: pointer;
+    }
     width: 60%;
     margin-left: 5%;
     text-align: left;
@@ -411,10 +420,6 @@ export default {
     text-align: center;
     display: inline-block;
     color: #383874;
-  }
-  .uploadScript{
-    width: 80px;
-    display: inline-block;
   }
   .uploadBtn{
     border-radius: 10px;
