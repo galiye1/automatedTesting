@@ -2,12 +2,14 @@
   <div class="process">
     <div class="process-left">
       <div class="back" @click.stop="back"><img src="../assets/img/back.png" alt=""> 返回</div>
-      <ul :class="{'single':(pndex%2)==0}" v-for="(item , pndex) in tabelData " :key="pndex">
+      <div class="left-tabel">
+        <ul :class="{'single':(pndex%2)==0}" v-for="(item , pndex) in tabelData " :key="pndex">
         <li class="name" @click="detailChose(pndex)">{{item.name}}</li>
         <li class="success" @click="detailChose(pndex)" v-show="item.test=='测试完成'"><img src="../assets/img/success.png" alt=""> 测试完成</li>
         <li class="ing" @click="detailChose(pndex)" v-show="item.test=='测试中'"><img src="../assets/img/ing.png" alt=""></li>
         <li class="wait" @click="detailChose(pndex)" v-show="item.test=='未测试'"><img src="../assets/img/wait.png" alt=""> 未测试</li>
       </ul>
+      </div>
     </div>
     <div class="process-right">
       <div class="right-header">
@@ -191,6 +193,11 @@ export default {
 .process-left {
   position: relative;
   width: 224px;
+  .left-tabel{
+    height: 90%;
+    overflow:scroll;
+    width: 100%;
+  }
   .single{
     background-color: #fff;
   }
