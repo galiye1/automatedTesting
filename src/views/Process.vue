@@ -1,7 +1,6 @@
 <template>
   <div class="process">
     <div class="process-left">
-      <div class="back" @click.stop="back"><img src="../assets/img/back.png" alt=""> 返回</div>
       <div class="left-tabel">
         <ul :class="{'single':(pndex%2)==0}" v-for="(item , pndex) in tabelData " :key="pndex">
         <li class="name" @click="detailChose(pndex)">{{item.name}}</li>
@@ -93,7 +92,7 @@ export default {
       // 连接建立之后执行send方法发送数据
       const actions = { test: '12345' }
       const date = new Date()
-      this.startTime = date.toLocaleDateString()
+      this.startTime = date.toLocaleTimeString()
       this.websocketsend(JSON.stringify(actions))
     },
     websocketonerror () {
@@ -140,9 +139,6 @@ export default {
         (reject) => {}
       )
     },
-    back () {
-      this.$router.push('/Test')
-    },
     websocketsend (Data) {
       // 数据发送
       this.websock.send(Data)
@@ -171,19 +167,6 @@ export default {
     font-weight: bolder;
   }
 }
-.back{
-  position: absolute;
-  font-size: 25px;
-  font-weight: bolder;
-  letter-spacing: 1px;
-  bottom: 45px;
-  left: 25px;
-  z-index: 1000;
-  cursor: pointer;
-  img{
-    padding-bottom: 5px;
-  }
-}
 
 .process {
   display: flex;
@@ -194,7 +177,7 @@ export default {
   position: relative;
   width: 224px;
   .left-tabel{
-    height: 90%;
+    height: 100%;
     overflow:scroll;
     width: 100%;
   }

@@ -2,8 +2,11 @@
   <div id="app">
       <el-container>
         <el-header>
-          <div class="title" @click="back" >
+          <div class="title" @click="back" v-if="this.$route.path!='/Process'">
             <span>软件适配兼容性自动化测试系统</span>
+          </div>
+          <div class="back" @click="back2" v-if="this.$route.path=='/Process'">
+            <img src="./assets/img/back.png" alt=""> 返回
           </div>
         </el-header>
         <el-main>
@@ -23,7 +26,10 @@ export default {
   methods: {
     back () {
       this.$router.push('/')
-    }
+    },
+    back2 () {
+      this.$router.push('/Test')
+    },
   },
   created () {
     // localStorage.clear()
@@ -59,8 +65,19 @@ export default {
   font-size: 34px;
   color: #383874;
   font-weight: bolder;
-  padding-left: 2rem;
+  padding-left: 3%;
   cursor: pointer;
+}
+.back{
+  font-size: 25px;
+  font-weight: bolder;
+  padding-left: 3%;
+  letter-spacing: 1px;
+  z-index: 1000;
+  cursor: pointer;
+  img{
+    padding-bottom: 5px;
+  }
 }
 
 #nav {
