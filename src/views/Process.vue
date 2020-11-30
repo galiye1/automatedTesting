@@ -53,7 +53,8 @@ export default {
       useTime: '',
       detail: {
         total: 0,
-        steps: []
+        steps: [
+        ]
       },
       testData: [],
       stepsDetail: []
@@ -81,7 +82,7 @@ export default {
   methods: {
     initWebSocket () {
       // 初始化weosocket
-      const wsuri = 'ws://127.0.0.1:13500/socket/1'
+      const wsuri = 'ws://192.168.102.99:13500/socket/1'
       this.websock = new WebSocket(wsuri)
       this.websock.onmessage = this.websocketonmessage
       this.websock.onopen = this.websocketonopen
@@ -225,7 +226,7 @@ export default {
     height: 825px;
     width: 100%;
     background-color: #2a2a30;
-    color: #1b4f1e;
+    color: #1f7d24;
     .font-content {
       margin: 20px;
       text-align: start;

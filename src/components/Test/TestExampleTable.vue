@@ -1,10 +1,10 @@
 <template>
   <div id="testExampleTable">
 <!--    [this.$route.query.index]-->
-    <a-table :data-source="this.$store.state.testExample" :columns="columns" :pagination="false" :scroll="{ y: 300 | true}">
+    <a-table :data-source="this.$store.state.testExample" :columns="columns" :pagination="false" :scroll="{ y: 752 | true}">
       <template slot="operation" slot-scope="text, record">
-        <a-button class="readBtn" @click="readTestResult(record.id)">查看</a-button>
-        <a-button class="deleteBtn" @click="deleteExampleData(record.key, record.id)">删除</a-button>
+        <a class="readBtn" @click="readTestResult(record.id)">查看</a>
+        <a class="deleteBtn" @click="deleteExampleData(record.key, record.id)">删除</a>
       </template>
     </a-table>
   </div>
@@ -37,12 +37,12 @@ export default {
           dataIndex: 'browser'
         },
         {
-          title: '开始时间',
-          dataIndex: 'startTime'
+          title: '总部署数',
+          dataIndex: 'total'
         },
         {
-          title: '耗时',
-          dataIndex: 'costTime'
+          title: '已完成数',
+          dataIndex: 'success'
         },
         {
           title: '操作',
@@ -66,13 +66,16 @@ export default {
 
 <style lang="less" scoped>
   .readBtn{
+    &:hover {
+      color: deepskyblue;
+    }
+    margin-right: 10%;
     color: #383874;
     background-color: white;
     border: none;
   }
   .deleteBtn{
     color: red;
-    background-color: white;
     border: none;
   }
 </style>

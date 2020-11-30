@@ -1,23 +1,24 @@
 <template>
   <div id="test">
     <a-layout>
-      <a-layout-header>{{ this.$store.state.projectName }}</a-layout-header>
+      <a-layout-header>
+        <h1 class="tableTitle">测试报告</h1>
+      </a-layout-header>
       <a-layout class="middle">
         <a-layout-sider>
-          <h2 class="testProName">测试名称</h2>
           <div class="exampleHeader">
             <div class="square"></div>
-            <div class="testExampleTitle">{{ this.$store.state.projectName }}</div>
+            <div :title="this.$store.state.projectName" class="testExampleTitle" @click="showAllExample">{{ this.$store.state.projectName }}</div>
             <img class="allPlay" ref="allPlayBtn" :src="allPlayImg" @click="runAllTest"/>
           </div>
           <div class="exampleList" v-for="(item, index) in receiveData.tests" :key="index">
             <div class="example">
               <div class="circle"></div>
-              <div class="exampleName">{{ item.name }}</div>
+              <div :title="item.name" class="exampleName" @click="showExample(item)">{{ item.name }}</div>
               <img class="playBtn" ref="playBtnRef" :src="playImg" @click="runTest($event, index)"/>
             </div>
           </div>
-          <a-modal title="xxxxxxxxx" v-model="envSet" :destroyOnClose="true" okText="开始测试" @ok="ok">
+          <a-modal title="" v-model="envSet" :destroyOnClose="true" cancelText="静默测试" okText="非静默测试" @cancel="ok" @ok="cancel" :maskClosable="false">
             <div class="terminal">
               <div class="terminalTitle">播放测试终端：</div>
               <a-checkbox-group :options="terminalOptions" @change="terminalCheckbox">
@@ -41,11 +42,6 @@
               </a-upload>
             </div>
           </a-modal>
-          <h1 class="tableTitle">测试报告</h1>
-          <a-table class="noPage" v-if="noPage" :columns="columns" :pagination="false" :scroll="{ y: 300 | true}">
-          </a-table>
-          <a-table  class="allPage" v-if="allPage" :data-source="this.allExampleData" :columns="columns" :pagination="false" :scroll="{ y: 300 | true}">
-          </a-table>
           <router-view/>
         </a-layout-content>
       </a-layout>
@@ -84,7 +80,7 @@ export default {
           dataIndex: 'stratTime'
         },
         {
-          title: '耗时',
+          title: '耗时(ms)',
           dataIndex: 'costTime'
         },
         {
@@ -93,21 +89,13 @@ export default {
           scopedSlots: { customRender: 'operation' }
         }
       ],
-      exampleList: [
-        {
-          exampleName: '用例1'
-        },
-        {
-          exampleName: '用例2'
-        }
-      ],
       headers: {
         accept: 'application/json',
         'Content-Type': 'multipart/form-data'
       },
       receiveData: {},
       playImg: require('../assets/img/stop.png'),
-      allPlayImg: require('../assets/img/allPlay.png'),
+      allPlayImg: require('../assets/img/allStop.png'),
       allPlayBtn: true,
       envSet: false,
       addTest: false,
@@ -115,61 +103,69 @@ export default {
         terminal: [],
         browser: []
       },
+      exampleIndex: -1,
       terminalOptions: ['本机'],
       browserOptions: ['uos', '360', 'chrome', 'firefox'],
-      allModal: false, // 记录是否开启全部测试
-      noPage: false,
-      allPage: false,
-      examplePage: true,
-      allExampleData: []
+      testExampleCache: []
     }
   },
   methods: {
     runTest (event, index) {
-      this.noPage = false
-      this.examplePage = true
-      this.allPage = false
       if (event.target.getAttribute('src') === require('../assets/img/stop.png')) {
         this.envSet = true
-      } else if (event.target.getAttribute('src') === require('../assets/img/play.png')) {
       }
       this.exampleIndex = index
-      this.$store.state.scriptDataExample = []
-      this.$store.state.scriptDataExample.push(this.receiveData.tests[index])
     },
     runAllTest (event) {
-      this.noPage = false
-      this.examplePage = false
-      this.allPage = false
-      if (event.target.getAttribute('src') === require('../assets/img/allPlay.png')) {
-        this.allModal = true
+      if (event.target.getAttribute('src') === require('../assets/img/allStop.png')) {
         this.envSet = true
-      } else if (event.target.getAttribute('src') === require('../assets/img/play.png')) {
       }
-      this.$store.state.scriptDataExample = []
-      this.receiveData.tests.map((item, index) => {
-        this.$store.state.scriptDataExample.push(item)
-      })
     },
-    ok () {
-      this.envSet = false
-      if (this.allModal === true) {
-        this.allPage = true
-        this.noPage = false
-        this.examplePage = false
-        this.$store.state.testExample.map((item, index) => {
-          this.allExampleData = this.allExampleData.concat(item)
-        })
-        this.allModal = false
-      } else {
-        this.noPage = false
-        this.allPage = false
-        this.examplePage = true
+    showExample (example) {
+      const exampleList = []
+      for (let i = 0; i < this.testExampleCache.length; i++) {
+        if (this.testExampleCache[i].name === example.name) {
+          exampleList.push(this.testExampleCache[i])
+        }
       }
+      this.$store.state.testExample = exampleList
+    },
+    showAllExample () {
+      this.$store.state.testExample = this.testExampleCache
+    },
+    cancel () {
+      this.envSet = false
       if (this.$store.state.browserConfig.length > 0) {
+        if (this.exampleIndex === -1) {
+          this.$store.state.scriptDataExample = []
+          this.receiveData.tests.map((item, index) => {
+            this.$store.state.scriptDataExample.push(item)
+          })
+        } else {
+          this.$store.state.scriptDataExample = []
+          this.$store.state.scriptDataExample.push(this.receiveData.tests[this.exampleIndex])
+        }
         this.$router.push({ path: '/Process' })
       } else {
         alert('请配置浏览器')
+        this.envSet = true
+      }
+    },
+    ok () {
+      this.envSet = false
+      if (this.$store.state.browserConfig.length > 0) {
+        if (this.exampleIndex === -1) {
+          this.$store.state.scriptDataExample = []
+          this.receiveData.tests.map((item, index) => {
+            this.$store.state.scriptDataExample.push(item)
+          })
+        } else {
+          this.$store.state.scriptDataExample = []
+          this.$store.state.scriptDataExample.push(this.receiveData.tests[this.exampleIndex])
+        }
+      } else {
+        alert('请配置浏览器')
+        this.envSet = true
       }
     },
     uploadScriptClick () {
@@ -181,7 +177,7 @@ export default {
       const formData = new FormData()
       const projectId = this.$store.state.projectId
       formData.append('file', this.file)
-      xhr.open('post', 'http://127.0.0.1:13500/project/upload/' + projectId)
+      xhr.open('post', 'http://http://192.168.102.99/:13500/project/upload/' + projectId)
       xhr.send(formData)
       xhr.onload = () => {
         if (xhr.status === 200) {
@@ -204,13 +200,12 @@ export default {
   },
   mounted () {
     this.$axios.getDetail(this.$store.state.projectId).then((res) => {
-      // this.examplePage = true
       this.$store.state.testExample = []
       this.$store.state.projectName = res.data.name
       for (let i = 0; i < res.data.reports.length; i++) {
         const report = {
-          model: '机型',
-          cpu: 'cpu'
+          model: '天玥TR1252',
+          cpu: '飞腾FT-2000'
         }
         report.key = i
         report.id = res.data.reports[i].id
@@ -220,8 +215,11 @@ export default {
         report.startTime = res.data.reports[i].startTime
         report.costTime = res.data.reports[i].costTime
         report.steps = res.data.reports[i].steps
+        report.total = res.data.reports[i].total
+        report.success = res.data.reports[i].successes
         this.$store.state.testExample.push(report)
       }
+      this.testExampleCache = JSON.parse(JSON.stringify(this.$store.state.testExample))
       this.receiveData = res.data
     })
   }
@@ -237,16 +235,22 @@ export default {
     background-color: white;
     text-align: left;
   }
+  .tableTitle{
+    display: inline-block;
+    margin-left: 45%;
+    color: #383874;
+    font-weight: bold;
+  }
   .ant-layout-footer {
     line-height: 1.5;
   }
   .middle{
-    background-color: #eef1fa;
+    background-color: #e7e4e4;
   }
   .ant-layout-sider {
     background-color: white;
     line-height: 40px;
-    height: 500px;
+    height: 880px;
     margin-top: 10px;
   }
   .testExampleList {
@@ -256,7 +260,7 @@ export default {
   }
   .ant-layout-content {
     color: #fff;
-    height: auto;
+    height: 900px;
     line-height: 60px;
     position: relative;
     margin-left: 20px;
@@ -274,22 +278,24 @@ export default {
     font-weight: bold;
   }
   .uploadScript{
-    float: right;
     height: 40px;
     width: 100px;
     line-height: 40px;
+    margin-left: 90%;
     margin-top: 15px;
+    margin-bottom: 20px;
     border-radius: 5%;
     border: none;
     background-color: #383874;
   }
   .exampleHeader{
     height: 30px;
-    width: 67%;
+    width: 70%;
     display: flex;
     justify-content: center;
     align-items: center;
     float: right;
+    margin-top: 10px;
     margin-right: 15%;
     border-bottom: 1px solid #383874;
   }
@@ -299,11 +305,13 @@ export default {
     background-color: #383874;
   }
   .testExampleTitle{
+    width: 70%;
+    margin-left: 5px;
+    margin-right: 5px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    margin-left: 10px;
-    margin-right: 30px;
+    text-align: left;
   }
   .allPlay{
     height: 20px;
@@ -312,34 +320,31 @@ export default {
   .example{
     height: auto;
     width: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     float: right;
     margin-right: 15%;
     border-bottom: 1px dashed #383874;
-    color: #dbdbdb;
   }
   .circle{
-    display: inline-block;
     height: 8px;
     width: 8px;
     background-color: #383874;
     border-radius: 50%;
   }
   .exampleName{
-    width: 50px;
-    text-align: left;
+    width: 60%;
     margin-left: 5%;
-    display: inline-block;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .playBtn{
-    margin-left: 23%;
-    display: inline-block;
+    margin-left: 5%;
     height: 15px;
     width: 15px;
-  }
-  .tableTitle{
-    font-size: 2em;
-    color: #383874;
-    font-weight: bold;
   }
   /deep/ .ant-table-header {
     background-color: #383874;
@@ -354,6 +359,7 @@ export default {
   }
   .terminal{
     margin-left: 10%;
+    margin-top: 10%;
     color: #383874;
   }
   .browserSelect{
@@ -373,7 +379,8 @@ export default {
     justify-content: center;
   }
   /deep/ .ant-modal-footer .ant-btn:first-child{
-    display: none;
+    background-color: #383874;
+    color: white;
   }
   /deep/ .ant-modal-footer .ant-btn{
     background-color: #383874;

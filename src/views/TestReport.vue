@@ -2,7 +2,7 @@
   <div id="testReport">
     <router-link to="/Test">
       <div class="return">
-        <img src="../assets/img/return.png" />
+        <img src="../assets/img/back.png" />
         <span>返回</span>
       </div>
     </router-link>
@@ -14,15 +14,20 @@
       </div>
       <div class="mainLine">
         <div class="firstLine">
-          <span class="detailInfo">用例名：{{name}}</span><span class="detailInfo">系统：{{os}}</span><span class="detailInfo">浏览器：{{browser}}</span><span class="detailInfo">开始时间：{{startTime}}</span>
+          <span :title="name" class="detailInfo">用例名：{{name}}</span>
+          <span :title="model" class="detailInfo">机型：{{model}}</span>
+          <span :title="cpu" class="detailInfo">cpu：{{cpu}}</span>
+          <span :title="os" class="detailInfo">系统：{{os}}</span>
         </div>
         <div class="secondLine">
-          <span class="detailInfo">耗时：{{costTime}}</span>
+          <span :title="browser" class="detailInfo">浏览器：{{browser}}</span>
+          <span :title="startTime" class="detailInfo">开始时间：{{startTime}}</span>
+          <span :title="costTime" class="detailInfo">耗时：{{costTime}}</span>
         </div>
       </div>
       <a-table :data-source="testResult" :columns="columns" :pagination="false" :scroll="{ y: 600 | true }">
         <template slot="screenShot" slot-scope="text, record">
-          <img :src="record.screenShot" alt="截图"/>
+          <img :src="record.screenShot" v-if="!record.screenShot.length === 0"/>
         </template>
       </a-table>
     </div>
@@ -36,7 +41,7 @@ export default {
     return {
       columns: [
         {
-          title: '地址',
+          title: '步骤',
           dataIndex: 'content'
         },
         {
@@ -62,7 +67,9 @@ export default {
       os: '',
       browser: '',
       startTime: '',
-      costTime: ''
+      costTime: '',
+      model: '',
+      cpu: ''
     }
   },
   methods: {
@@ -88,6 +95,8 @@ export default {
         this.browser = item.browser
         this.startTime = item.startTime
         this.costTime = item.costTime
+        this.model = item.model
+        this.cpu = item.cpu
       }
     })
   },
@@ -139,6 +148,9 @@ export default {
   .detailInfo{
     width: 200px;
     margin-right: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .ant-table-wrapper{
     margin-top: 20px;
