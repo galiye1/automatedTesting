@@ -116,7 +116,7 @@ export default {
         browser: []
       },
       terminalOptions: ['本机'],
-      browserOptions: ['chrome', 'firefox'],
+      browserOptions: ['uos', '360', 'chrome', 'firefox'],
       allModal: false, // 记录是否开启全部测试
       noPage: false,
       allPage: false,
@@ -177,18 +177,18 @@ export default {
     },
     addTestBtn () {
       this.addTest = false
-      // const xhr = new XMLHttpRequest()
-      // const formData = new FormData()
-      // const projectId = this.$store.state.projectId
-      // formData.append('file', this.file)
-      // xhr.open('post', 'http://192.168.102.99:13500/project/upload/' + projectId)
-      // xhr.send(formData)
-      // xhr.onload = () => {
-      //   if (xhr.status === 200) {
-      //     this.receiveData = JSON.parse(xhr.responseText)
-      //     this.$store.state.scriptData = this.receiveData
-      //   }
-      // }
+      const xhr = new XMLHttpRequest()
+      const formData = new FormData()
+      const projectId = this.$store.state.projectId
+      formData.append('file', this.file)
+      xhr.open('post', 'http://127.0.0.1:13500/project/upload/' + projectId)
+      xhr.send(formData)
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          this.receiveData = JSON.parse(xhr.responseText)
+          this.$store.state.scriptData = this.receiveData
+        }
+      }
     },
     beforeUpload (file) {
       this.file = file
