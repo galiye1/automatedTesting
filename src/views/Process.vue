@@ -179,7 +179,7 @@ export default {
   width: 224px;
   .left-tabel{
     height: 100%;
-    overflow:scroll;
+    overflow-y:scroll;
     width: 100%;
   }
   .single{
@@ -236,7 +236,7 @@ export default {
         margin-right: 10px;
       }
     }
-    overflow: scroll;
+    overflow-y: scroll;
   }
   .right-bottom {
     display: flex;

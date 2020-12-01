@@ -113,7 +113,7 @@ export default {
 <style scope="scope" lang="less">
 .input {
   float: right;
-  margin-bottom: 5%;
+  margin-bottom: 3%;
   /deep/ .el-button {
     background-color: #383874;
     color: #fff;
