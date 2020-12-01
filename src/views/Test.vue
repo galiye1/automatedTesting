@@ -33,7 +33,7 @@
         </a-layout-sider>
         <a-layout-content>
           <button class="uploadScript" @click="uploadScriptClick">导入脚本</button>
-          <a-modal title="新建测试" v-model="addTest" :destroyOnClose="true" okText="确定" @ok="addTestBtn">
+          <a-modal title="新建测试" v-model="addTest" :destroyOnClose="true" cancelText="取消" okText="确定" @ok="addTestBtn">
             <div class="scriptUploadTitle">
               <div class="scriptUpload">脚本</div>
               <a-upload class="upload" action="http://127.0.0.1:13500/project/upload/1" name="file"
@@ -106,7 +106,8 @@ export default {
       exampleIndex: -1,
       terminalOptions: ['本机'],
       browserOptions: ['uos', '360', 'chrome', 'firefox'],
-      testExampleCache: []
+      testExampleCache: [],
+      file: ''
     }
   },
   methods: {
@@ -145,6 +146,7 @@ export default {
           this.$store.state.scriptDataExample = []
           this.$store.state.scriptDataExample.push(this.receiveData.tests[this.exampleIndex])
         }
+        this.$store.state.headless = false
         this.$router.push({ path: '/Process' })
       } else {
         alert('请配置浏览器')
@@ -163,6 +165,8 @@ export default {
           this.$store.state.scriptDataExample = []
           this.$store.state.scriptDataExample.push(this.receiveData.tests[this.exampleIndex])
         }
+        this.$store.state.headless = true
+        this.$router.push({ path: '/Process' })
       } else {
         alert('请配置浏览器')
         this.envSet = true
@@ -177,7 +181,7 @@ export default {
       const formData = new FormData()
       const projectId = this.$store.state.projectId
       formData.append('file', this.file)
-      xhr.open('post', 'http://127.0.0.1:13500/project/upload/' + projectId)
+      xhr.open('post', 'http://192.168.102.99:13500/project/upload/' + projectId)
       xhr.send(formData)
       xhr.onload = () => {
         if (xhr.status === 200) {

@@ -32,7 +32,7 @@ export default {
     },
   },
   created () {
-    // localStorage.clear()
+    localStorage.clear()
     window.addEventListener('beforeunload', () => {
       localStorage.setItem('store', JSON.stringify(this.$store.state))
     })

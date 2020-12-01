@@ -37,7 +37,7 @@ export default {
           dataIndex: 'browser'
         },
         {
-          title: '总部署数',
+          title: '总步骤数',
           dataIndex: 'total'
         },
         {

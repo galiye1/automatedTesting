@@ -22,7 +22,7 @@
         <div class="secondLine">
           <span :title="browser" class="detailInfo">浏览器：{{browser}}</span>
           <span :title="startTime" class="detailInfo">开始时间：{{startTime}}</span>
-          <span :title="costTime" class="detailInfo">耗时：{{parseInt(costTime/1000/60)}}分{{costTime/1000}}秒</span>
+          <span :title="costTime" class="detailInfo">耗时：{{parseInt(costTime/1000/60)}}分{{parseInt(costTime/1000)}}秒</span>
         </div>
       </div>
       <a-table :data-source="testResult" :columns="columns" :pagination="false" :scroll="{ y: 600 | true }">
@@ -78,10 +78,10 @@ export default {
     this.$store.state.testExample.map((item, index) => {
       if (item.id == this.$route.query.exampleId) {
         for (let i = 0; i < item.steps.length; i++) {
-          if (item.steps[i].screenShot == null) {
-            item.steps[i].screenShot = ''
+          if (item.steps[i].screenShot !== null) {
+            item.steps[i].screenShot = 'http://127.0.0.1:13500' + item.steps[i].screenShot + '.jpg'
           } else {
-            item.steps[i].screenShot = 'http://127.0.0.1/13500' + item.steps[i].screenShot
+            item.steps[i].screenShot = ''
           }
           if (item.steps[i].success == true) {
             item.steps[i].success = '是'

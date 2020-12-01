@@ -67,6 +67,7 @@ export default {
         const data = {}
         const tabel = {}
         data.browser = item
+        data.headless = this.$store.state.headless
         data.testCase = JSON.parse(JSON.stringify(item2))
         tabel.name = data.testCase.name
         tabel.test = '未测试'
