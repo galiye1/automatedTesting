@@ -82,7 +82,7 @@ export default {
   methods: {
     initWebSocket () {
       // 初始化weosocket
-      const wsuri = 'ws://192.168.102.99:13500/socket/1'
+      const wsuri = 'ws://127.0.0.1:13500/socket/1'
       this.websock = new WebSocket(wsuri)
       this.websock.onmessage = this.websocketonmessage
       this.websock.onopen = this.websocketonopen

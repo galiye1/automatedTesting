@@ -177,7 +177,7 @@ export default {
       const formData = new FormData()
       const projectId = this.$store.state.projectId
       formData.append('file', this.file)
-      xhr.open('post', 'http://http://192.168.102.99/:13500/project/upload/' + projectId)
+      xhr.open('post', 'http://127.0.0.1:13500/project/upload/' + projectId)
       xhr.send(formData)
       xhr.onload = () => {
         if (xhr.status === 200) {
