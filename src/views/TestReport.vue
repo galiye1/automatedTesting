@@ -22,7 +22,7 @@
         <div class="secondLine">
           <span :title="browser" class="detailInfo">浏览器：{{browser}}</span>
           <span :title="startTime" class="detailInfo">开始时间：{{startTime}}</span>
-          <span :title="costTime" class="detailInfo">耗时：{{costTime}}</span>
+          <span :title="costTime" class="detailInfo">耗时：{{parseInt(costTime/1000/60)}}分{{costTime/1000}}秒</span>
         </div>
       </div>
       <a-table :data-source="testResult" :columns="columns" :pagination="false" :scroll="{ y: 600 | true }">
