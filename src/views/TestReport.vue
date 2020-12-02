@@ -27,9 +27,12 @@
       </div>
       <a-table :data-source="testResult" :columns="columns" :pagination="false" :scroll="{ y: 600 | true }">
         <template slot="screenShot" slot-scope="text, record">
-          <img :src="record.screenShot" v-if="!record.screenShot.length === 0"/>
+          <a-button v-if="record.screenShot !== null" @click="imgShowBtn(record)">查看</a-button>
         </template>
       </a-table>
+      <a-modal v-model="imgModal" :footer="null" :centered="true" :width="1500">
+        <img :src="record.screenShot"/>
+      </a-modal>
     </div>
   </div>
 </template>
@@ -69,19 +72,24 @@ export default {
       startTime: '',
       costTime: '',
       model: '',
-      cpu: ''
+      cpu: '',
+      imgModal: false,
+      record: {}
     }
   },
   methods: {
+    imgShowBtn (record) {
+      this.record = record
+      this.imgModal = true
+    }
   },
   created () {
     this.$store.state.testExample.map((item, index) => {
       if (item.id == this.$route.query.exampleId) {
         for (let i = 0; i < item.steps.length; i++) {
           if (item.steps[i].screenShot !== null) {
-            item.steps[i].screenShot = 'http://127.0.0.1:13500' + item.steps[i].screenShot + '.jpg'
+            item.steps[i].screenShot = 'http://192.168.102.99:13500' + item.steps[i].screenShot + '.jpg'
           } else {
-            item.steps[i].screenShot = ''
           }
           if (item.steps[i].success == true) {
             item.steps[i].success = '是'
@@ -106,64 +114,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  .return{
-    text-align: left;
-    margin-left: 3%;
-    color: #383874;
-    font-size: 1.5em;
-    font-weight: bold;
-  }
-  .content{
-    height: 100%;
-    width: 80%;
-    margin-top: 20px;
-    margin-left: 10%;
-    text-align: left;
-  }
-  h1{
-    color: #383874;
-    font-weight: bold;
-  }
-  .infoTitle{
-    margin-top: 10px;
-  }
-  .icon{
-    display: inline-block;
-    height: 10px;
-    width: 5px;
-    background-color: #383874;
-  }
-  .baseInfo{
-    margin-left: 5px;
-    color: #383874;
-    display: inline-block;
-  }
-  .mainLine{
-    margin-top: 10px;
-    color: #383874;
-  }
-  .secondLine{
-    margin-top: 10px;
-  }
-  .detailInfo{
-    width: 200px;
-    margin-right: 100px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .ant-table-wrapper{
-    margin-top: 20px;
-  }
-  /deep/ .ant-table-header{
-    background-color: #383874;
-  }
-  /deep/ .ant-table-wrapper .ant-table-thead th{
-    text-align: center;
-    background-color: #383874;
-    color: white;
-  }
-  /deep/ .ant-table-wrapper td{
-    text-align: center;
-  }
+@import "../assets/css/testReport";
 </style>

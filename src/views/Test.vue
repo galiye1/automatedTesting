@@ -18,7 +18,7 @@
               <img class="playBtn" ref="playBtnRef" :src="playImg" @click="runTest($event, index)"/>
             </div>
           </div>
-          <a-modal title="" v-model="envSet" :destroyOnClose="true" cancelText="静默测试" okText="非静默测试" @cancel="ok" @ok="cancel" :maskClosable="false">
+          <a-modal title="" v-model="envSet" :destroyOnClose="true" :maskClosable="false" :footer="null">
             <div class="terminal">
               <div class="terminalTitle">播放测试终端：</div>
               <a-checkbox-group :options="terminalOptions" @change="terminalCheckbox">
@@ -28,6 +28,10 @@
               <div class="terminalTitle">测试浏览器：</div>
               <a-checkbox-group :options="browserOptions" @change="browserCheckbox">
               </a-checkbox-group>
+            </div>
+            <div class="modalFooter">
+              <a-button class="notStatic" @click="cancel">非静默测试</a-button>
+              <a-button class="static" @click="ok">静默测试</a-button>
             </div>
           </a-modal>
         </a-layout-sider>
@@ -43,6 +47,7 @@
             </div>
           </a-modal>
           <router-view/>
+          <a-button class="dataCountBtn" @click="dataCountClick">数据统计</a-button>
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -107,6 +112,7 @@ export default {
       terminalOptions: ['本机'],
       browserOptions: ['uos', '360', 'chrome', 'firefox'],
       testExampleCache: [],
+      chromchose:[],
       file: ''
     }
   },
@@ -136,7 +142,7 @@ export default {
     },
     cancel () {
       this.envSet = false
-      if (this.$store.state.browserConfig.length > 0) {
+      if (this.chromchose.length > 0) {
         if (this.exampleIndex === -1) {
           this.$store.state.scriptDataExample = []
           this.receiveData.tests.map((item, index) => {
@@ -155,7 +161,7 @@ export default {
     },
     ok () {
       this.envSet = false
-      if (this.$store.state.browserConfig.length > 0) {
+      if (this.chromchose.length > 0) {
         if (this.exampleIndex === -1) {
           this.$store.state.scriptDataExample = []
           this.receiveData.tests.map((item, index) => {
@@ -189,6 +195,7 @@ export default {
           this.$store.state.scriptData = this.receiveData
         }
       }
+      location.reload()
     },
     beforeUpload (file) {
       this.file = file
@@ -198,8 +205,12 @@ export default {
       this.testAllSet.terminal = checkedList
     },
     browserCheckbox (checkedList) {
-      this.testAllSet.browser = checkedList
+      this.chromchose = checkedList
+      this.testAllSet.browser = this.chromchose
       this.$store.state.browserConfig = this.testAllSet.browser
+    },
+    dataCountClick () {
+      this.$router.push({ path: '/dataCount' })
     }
   },
   mounted () {
@@ -231,210 +242,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  #components-layout-demo-basic {
-    text-align: center;
-  }
-  .ant-layout-header{
-    font-size: 2em;
-    background-color: white;
-    text-align: left;
-  }
-  .tableTitle{
-    display: inline-block;
-    margin-left: 45%;
-    color: #383874;
-    font-weight: bold;
-  }
-  .ant-layout-footer {
-    line-height: 1.5;
-  }
-  .middle{
-    background-color: #e7e4e4;
-  }
-  .ant-layout-sider {
-    background-color: white;
-    line-height: 40px;
-    height: 880px;
-    margin-top: 10px;
-  }
-  .testExampleList {
-    height: 240px;
-    overflow: auto;
-    overflow-y: overlay;
-  }
-  .ant-layout-content {
-    color: #fff;
-    height: 900px;
-    line-height: 60px;
-    position: relative;
-    margin-left: 20px;
-  }
-  .ant-layout {
-    margin-bottom: 48px;
-  }
-  .ant-layout:last-child {
-    margin: 0;
-  }
-  .script{
-    display: inline-block;
-    font-size: 2em;
-    color: #383874;
-    font-weight: bold;
-  }
-  .uploadScript{
-    height: 40px;
-    width: 100px;
-    line-height: 40px;
-    margin-left: 90%;
-    margin-top: 15px;
-    margin-bottom: 20px;
-    border-radius: 5%;
-    border: none;
-    background-color: #383874;
-    cursor: pointer;
-  }
-  .exampleHeader{
-    height: 30px;
-    width: 70%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    float: right;
-    margin-top: 10px;
-    margin-right: 15%;
-    border-bottom: 1px solid #383874;
-  }
-  .square{
-    height: 12px;
-    width: 12px;
-    background-color: #383874;
-  }
-  .testExampleTitle{
-    &:hover {
-      cursor: pointer;
-      color: deepskyblue;
-    }
-    width: 70%;
-    margin-left: 5px;
-    margin-right: 5px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-align: left;
-  }
-  .allPlay{
-    height: 20px;
-    width: 20px;
-  }
-  .example{
-    height: auto;
-    width: 60%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    float: right;
-    margin-right: 15%;
-    border-bottom: 1px dashed #383874;
-  }
-  .circle{
-    height: 8px;
-    width: 8px;
-    background-color: #383874;
-    border-radius: 50%;
-  }
-  .exampleName{
-    &:hover {
-      color: deepskyblue;
-      cursor: pointer;
-    }
-    width: 60%;
-    margin-left: 5%;
-    text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .playBtn{
-    margin-left: 5%;
-    height: 15px;
-    width: 15px;
-  }
-  /deep/ .ant-table-header {
-    background-color: #383874;
-  }
-  /deep/ .ant-table-header .ant-table-thead th{
-    color: white;
-    background-color: #383874;
-    text-align: center;
-  }
-  /deep/ .ant-table-tbody td{
-    text-align: center;
-  }
-  .terminal{
-    margin-left: 10%;
-    margin-top: 10%;
-    color: #383874;
-  }
-  .browserSelect{
-    margin-left: 10%;
-    margin-top: 10%;
-    color: #383874;
-  }
-  .terminalTitle{
-    display: inline-block;
-    width: 100px;
-  }
-  .ant-checkbox-wrapper{
-    color: #7778a3;
-  }
-  /deep/ .ant-modal-footer{
-    display: flex;
-    justify-content: center;
-  }
-  /deep/ .ant-modal-footer .ant-btn:first-child{
-    background-color: #383874;
-    color: white;
-  }
-  /deep/ .ant-modal-footer .ant-btn{
-    background-color: #383874;
-  }
-  .testNameTitle{
-    margin-left: 10%;
-  }
-  .scriptUploadTitle{
-    margin-top: 10%;
-    margin-bottom: 10%;
-    margin-left: 30%;
-  }
-  .testName{
-    width: 100px;
-    text-align: center;
-    display: inline-block;
-    color: #383874;
-  }
-  .testNameInp{
-    width: 250px;
-    border: none;
-    border-radius: 0;
-    border-bottom: 1px solid #383874;
-    display: inline-block;
-  }
-  .scriptUpload{
-    width: 100px;
-    text-align: center;
-    display: inline-block;
-    color: #383874;
-  }
-  .uploadBtn{
-    border-radius: 10px;
-    border-color: #383874;
-    background-color: white;
-    color: #383874;
-  }
-  /deep/ .upload .ant-upload-list-item-info{
-    margin-left: 22%;
-  }
-  /deep/ .upload .ant-upload-list-item-card-actions{
-    right: 50%;
-  }
+@import "../assets/css/test";
 </style>

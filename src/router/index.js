@@ -5,6 +5,7 @@ import Test from '../views/Test'
 import TestExampleTable from '../components/Test/TestExampleTable'
 import TestReport from '../views/TestReport'
 import Process from '../views/Process'
+import DataCount from '../views/DataCount'
 Vue.use(VueRouter)
 
 const routes = [
@@ -33,6 +34,11 @@ const routes = [
     path: '/Process',
     name: 'Process',
     component: Process
+  },
+  {
+    path: '/dataCount',
+    name: 'dataCount',
+    component: DataCount
   }
 ]
 

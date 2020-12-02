@@ -14,7 +14,8 @@ export default new Vuex.Store({
     scriptData: {},
     scriptDataExample: [],
     browserConfig: [],
-    headless: false
+    headless: false,
+    exampleIdList: []
   },
   mutations: {
     setId (state, id) {

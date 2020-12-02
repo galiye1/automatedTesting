@@ -38,6 +38,12 @@ const serve = {
     return axios(`report/${id}`, {
       method: 'delete'
     })
+  },
+  getStepData (data) {
+    return axios('report/statistics', {
+      method: 'post',
+      data
+    })
   }
 }
 

@@ -1,7 +1,7 @@
 <template>
   <div id="testExampleTable">
-<!--    [this.$route.query.index]-->
-    <a-table :data-source="this.$store.state.testExample" :columns="columns" :pagination="false" :scroll="{ y: 752 | true}">
+    <a-table :data-source="this.$store.state.testExample" :columns="columns" :pagination="false" :scroll="{ y: 752 | true}"
+    :row-selection="rowSelection">
       <template slot="operation" slot-scope="text, record">
         <a class="readBtn" @click="readTestResult(record.id)">查看</a>
         <a class="deleteBtn" @click="deleteExampleData(record.key, record.id)">删除</a>
@@ -49,7 +49,20 @@ export default {
           dataIndex: 'operation',
           scopedSlots: { customRender: 'operation' }
         }
-      ]
+      ],
+      idList: []
+    }
+  },
+  computed: {
+    rowSelection () {
+      return {
+        onChange: (selectedRowKeys, selectedRows) => {
+          for (let i = 0; i < selectedRows.length; i++) {
+            this.idList.push(selectedRows[i].id)
+          }
+          this.$store.state.exampleIdList = this.idList
+        }
+      }
     }
   },
   methods: {
