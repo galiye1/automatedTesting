@@ -122,7 +122,7 @@ export default {
     },
     runAllTest (event) {
       if (event.target.getAttribute('src') === require('../assets/img/allStop.png')) {
-        this.envSet = true
+        if (this.receiveData.tests.length > 0) this.envSet = true
       }
     },
     showExample (example) {
@@ -152,7 +152,6 @@ export default {
       this.$refs.ruleForm.resetFields()
     },
     ok () {
-      console.log(this.exampleIndex)
       if (this.exampleIndex === -1) {
         this.$store.state.scriptDataExample = []
         this.receiveData.tests.map((item, index) => {
@@ -164,7 +163,7 @@ export default {
       }
       this.testAllSet.browser = this.form.browserType
       this.$store.state.browserConfig = this.testAllSet.browser
-      this.$store.state.headless = Boolean(this.form.headlessType)
+      this.$store.state.headless = this.form.headlessType == 'true'
       this.cookie.cookieKey = this.form.cookieKey
       this.cookie.cookieValue = this.form.cookieValue
       if (this.cookie.cookieKey == '' && this.cookie.cookieValue != '') {
@@ -199,14 +198,6 @@ export default {
     beforeUpload (file) {
       this.file = file
       return false
-    },
-    terminalCheckbox (checkedList) {
-      this.testAllSet.terminal = checkedList
-    },
-    browserCheckbox (checkedList) {
-      this.chromchose = checkedList
-      this.testAllSet.browser = this.chromchose
-      this.$store.state.browserConfig = this.testAllSet.browser
     },
     dataCountClick () {
       if (this.$store.state.exampleIdList.length > 0) {
