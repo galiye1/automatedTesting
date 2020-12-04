@@ -37,14 +37,14 @@
                     <a-checkbox value="firefox">firefox</a-checkbox>
                   </a-checkbox-group>
               </a-form-model-item>
-              <a-form-model-item class="cookieTitle" label="cookie">
-              </a-form-model-item>
-             <a-form-model-item class="cookieKey" label="cookieKey:" prop="cookieKey">
-                 <a-input class="cookieInp" v-model="form.cookieKey"/>
-             </a-form-model-item>
-              <a-form-model-item label="cookieValue:" prop="cookieValue">
-                <a-input class="cookieInp" v-model="form.cookieValue"/>
-              </a-form-model-item>
+<!--              <a-form-model-item class="cookieTitle" label="cookie">-->
+<!--              </a-form-model-item>-->
+<!--             <a-form-model-item class="cookieKey" label="cookieKey:" prop="cookieKey">-->
+<!--                 <a-input class="cookieInp" v-model="form.cookieKey"/>-->
+<!--             </a-form-model-item>-->
+<!--              <a-form-model-item label="cookieValue:" prop="cookieValue">-->
+<!--                <a-input class="cookieInp" v-model="form.cookieValue"/>-->
+<!--              </a-form-model-item>-->
               <a-form-model-item label="" prop="headlessType">
                 <a-radio-group v-model="form.headlessType">
                   <a-radio value="false">非静默测试</a-radio>
