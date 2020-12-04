@@ -18,21 +18,40 @@
               <img class="playBtn" ref="playBtnRef" :src="playImg" @click="runTest($event, index)"/>
             </div>
           </div>
-          <a-modal title="" v-model="envSet" :destroyOnClose="true" :maskClosable="false" :footer="null">
-            <div class="terminal">
-              <div class="terminalTitle">播放测试终端：</div>
-              <a-checkbox-group :options="terminalOptions" @change="terminalCheckbox">
-              </a-checkbox-group>
-            </div>
-            <div class="browserSelect">
-              <div class="terminalTitle">测试浏览器：</div>
-              <a-checkbox-group :options="browserOptions" @change="browserCheckbox">
-              </a-checkbox-group>
-            </div>
-            <div class="modalFooter">
-              <a-button class="notStatic" @click="cancel">非静默测试</a-button>
-              <a-button class="static" @click="ok">静默测试</a-button>
-            </div>
+          <a-modal title="" v-model="envSet" :maskClosable="false" cancelText="取消" okText="确定" @cancel="resetForm" @ok="() => {
+            if (onSubmitForm()) {
+              ok()
+            }
+          }">
+            <a-form-model ref="ruleForm" :model="form" :rules="rules">
+              <a-form-model-item label="播放测试终端：" prop="terminalType">
+                  <a-checkbox-group v-model="form.terminalType">
+                    <a-checkbox value="本机">本机</a-checkbox>
+                  </a-checkbox-group>
+              </a-form-model-item>
+              <a-form-model-item label="测试浏览器：" prop="browserType">
+                  <a-checkbox-group v-model="form.browserType">
+                    <a-checkbox value="uos">uos</a-checkbox>
+                    <a-checkbox value="360">360</a-checkbox>
+                    <a-checkbox value="chrome">chrome</a-checkbox>
+                    <a-checkbox value="firefox">firefox</a-checkbox>
+                  </a-checkbox-group>
+              </a-form-model-item>
+              <a-form-model-item class="cookieTitle" label="cookie">
+              </a-form-model-item>
+             <a-form-model-item class="cookieKey" label="cookieKey:" prop="cookieKey">
+                 <a-input class="cookieInp" v-model="form.cookieKey"/>
+             </a-form-model-item>
+              <a-form-model-item label="cookieValue:" prop="cookieValue">
+                <a-input class="cookieInp" v-model="form.cookieValue"/>
+              </a-form-model-item>
+              <a-form-model-item label="" prop="headlessType">
+                <a-radio-group v-model="form.headlessType">
+                  <a-radio value="false">非静默测试</a-radio>
+                  <a-radio value="true">静默测试</a-radio>
+                </a-radio-group>
+              </a-form-model-item>
+            </a-form-model>
           </a-modal>
         </a-layout-sider>
         <a-layout-content>
@@ -59,41 +78,6 @@ export default {
   name: 'Test',
   data () {
     return {
-      columns: [
-        {
-          title: '用例名',
-          dataIndex: 'name'
-        },
-        {
-          title: '机型',
-          dataIndex: 'model'
-        },
-        {
-          title: 'cpu',
-          dataIndex: 'cpu'
-        },
-        {
-          title: '系统',
-          dataIndex: 'os'
-        },
-        {
-          title: '浏览器',
-          dataIndex: 'browser'
-        },
-        {
-          title: '开始时间',
-          dataIndex: 'stratTime'
-        },
-        {
-          title: '耗时(ms)',
-          dataIndex: 'costTime'
-        },
-        {
-          title: '操作',
-          dataIndex: 'operation',
-          scopedSlots: { customRender: 'operation' }
-        }
-      ],
       headers: {
         accept: 'application/json',
         'Content-Type': 'multipart/form-data'
@@ -110,10 +94,23 @@ export default {
       },
       exampleIndex: -1,
       terminalOptions: ['本机'],
-      browserOptions: ['uos', '360', 'chrome', 'firefox'],
       testExampleCache: [],
-      chromchose:[],
-      file: ''
+      file: '',
+      cookie: {},
+      form: {
+        terminalType: [],
+        browserType: [],
+        cookieKey: '',
+        cookieValue: '',
+        headlessType: ''
+      },
+      rules: {
+        terminalType: [{ type: 'array', required: true, message: '请配置终端', trigger: 'change' }],
+        browserType: [{ type: 'array', required: true, message: '请配置浏览器', trigger: 'change' }],
+        cookieKey: [{ required: false, message: '请输入key', trigger: 'blur' }],
+        cookieValue: [{ message: '请输入Value', trigger: 'blur' }],
+        headlessType: [{ required: true, message: '请配置是否需要静默测试', trigger: 'change' }]
+      }
     }
   },
   methods: {
@@ -140,43 +137,45 @@ export default {
     showAllExample () {
       this.$store.state.testExample = this.testExampleCache
     },
-    cancel () {
-      this.envSet = false
-      if (this.chromchose.length > 0) {
-        if (this.exampleIndex === -1) {
-          this.$store.state.scriptDataExample = []
-          this.receiveData.tests.map((item, index) => {
-            this.$store.state.scriptDataExample.push(item)
-          })
+    onSubmitForm () {
+      let flag = false
+      this.$refs.ruleForm.validate(valid => {
+        if (valid) {
+          flag = true
         } else {
-          this.$store.state.scriptDataExample = []
-          this.$store.state.scriptDataExample.push(this.receiveData.tests[this.exampleIndex])
+          flag = false
         }
-        this.$store.state.headless = false
-        this.$router.push({ path: '/Process' })
-      } else {
-        alert('请配置浏览器')
-        this.envSet = true
-      }
+      })
+      return flag
+    },
+    resetForm () {
+      this.$refs.ruleForm.resetFields()
     },
     ok () {
-      this.envSet = false
-      if (this.chromchose.length > 0) {
-        if (this.exampleIndex === -1) {
-          this.$store.state.scriptDataExample = []
-          this.receiveData.tests.map((item, index) => {
-            this.$store.state.scriptDataExample.push(item)
-          })
-        } else {
-          this.$store.state.scriptDataExample = []
-          this.$store.state.scriptDataExample.push(this.receiveData.tests[this.exampleIndex])
-        }
-        this.$store.state.headless = true
-        this.$router.push({ path: '/Process' })
+      console.log(this.exampleIndex)
+      if (this.exampleIndex === -1) {
+        this.$store.state.scriptDataExample = []
+        this.receiveData.tests.map((item, index) => {
+          this.$store.state.scriptDataExample.push(item)
+        })
       } else {
-        alert('请配置浏览器')
-        this.envSet = true
+        this.$store.state.scriptDataExample = []
+        this.$store.state.scriptDataExample.push(this.receiveData.tests[this.exampleIndex])
       }
+      this.testAllSet.browser = this.form.browserType
+      this.$store.state.browserConfig = this.testAllSet.browser
+      this.$store.state.headless = Boolean(this.form.headlessType)
+      this.cookie.cookieKey = this.form.cookieKey
+      this.cookie.cookieValue = this.form.cookieValue
+      if (this.cookie.cookieKey == '' && this.cookie.cookieValue != '') {
+        this.rules.cookieKey[0].required = true
+        this.onSubmitForm()
+        this.rules.cookieKey[0].required = false
+        return
+      }
+      this.$store.state.cookie = this.cookie
+      this.envSet = false
+      this.$router.push({ path: '/Process' })
     },
     uploadScriptClick () {
       this.addTest = true
@@ -210,7 +209,11 @@ export default {
       this.$store.state.browserConfig = this.testAllSet.browser
     },
     dataCountClick () {
-      this.$router.push({ path: '/dataCount' })
+      if (this.$store.state.exampleIdList.length > 0) {
+        this.$router.push({ path: '/dataCount' })
+      } else {
+        alert('请选择用例')
+      }
     }
   },
   mounted () {

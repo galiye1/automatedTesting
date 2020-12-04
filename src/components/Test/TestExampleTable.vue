@@ -57,6 +57,8 @@ export default {
     rowSelection () {
       return {
         onChange: (selectedRowKeys, selectedRows) => {
+          console.log(selectedRows)
+          this.idList = []
           for (let i = 0; i < selectedRows.length; i++) {
             this.idList.push(selectedRows[i].id)
           }
