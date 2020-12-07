@@ -140,15 +140,12 @@
   text-align: center;
 }
 /deep/ .ant-modal {
-  width: 30% !important;
-}
-.ant-form-item{
-  display: flex;
-  justify-items: center;
+  width: 800px !important;
 }
 /deep/ .ant-form-item .ant-form-item-label{
+  vertical-align: top;
   display: inline-block;
-  width: 40%;
+  width: 20%;
   text-align: left;
 }
 /deep/ .ant-form-item .ant-form-item-label label{
@@ -156,11 +153,7 @@
 }
 /deep/ .ant-form-item .ant-form-item-control-wrapper{
   display: inline-block;
-  width: 60%;
-}
-.cookieTitle{
-  margin-left: 2%;
-  color: #383874;
+  width: 70%;
 }
 .ant-radio-group label{
   color: #383874;
@@ -171,6 +164,33 @@
 }
 /deep/ .cookieKey .ant-form-explain{
   margin-left: 5%;
+}
+.cookieKey{
+  display: inline-block;
+  width: 45%;
+}
+/deep/ .cookieKey .ant-form-item-label{
+  vertical-align: top;
+  width: 100px;
+}
+.cookieValue{
+  width: 45%;
+  display: inline-block;
+}
+/deep/ .cookieValue .ant-form-item-label{
+  vertical-align: top;
+  width: 100px;
+}
+.cookieInp{
+  width: 80%;
+}
+.cookieList{
+  max-height: 300px;
+  overflow: auto;
+  overflow-y: overlay;
+}
+.cookieAdd {
+  display: inline-block;
 }
 .testNameTitle{
   margin-left: 10%;
@@ -224,9 +244,4 @@
 }
 .cookieText{
   display: inline-block;
-}
-.cookieInp{
-  display: inline-block;
-  width: 150px;
-  margin-left: 5%;
 }

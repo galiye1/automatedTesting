@@ -69,11 +69,14 @@ export default {
         data.browser = item
         data.headless = this.$store.state.headless
         data.params = []
-        if(this.$store.state.cookie.cookieKey!='' || this.$store.state.cookie.cookieValue!='') {
-          data.params[0] = {}
-          data.params[0].type = 'cookies'
-          data.params[0].name = this.$store.state.cookie.cookieKey
-          data.params[0].value = this.$store.state.cookie.cookieValue
+        // if(this.$store.state.cookie.cookieKey!='' || this.$store.state.cookie.cookieValue!='') {
+        //   data.params[0] = {}
+        //   data.params[0].type = 'cookies'
+        //   data.params[0].name = this.$store.state.cookie.cookieKey
+        //   data.params[0].value = this.$store.state.cookie.cookieValue
+        // }
+        for (let i = 0; i < this.$store.state.cookie.length; i++) {
+          data.params.push({ type: 'cookies', name: this.$store.state.cookie[i].cookieKey, value: this.$store.state.cookie[i].cookieValue })
         }
         data.testCase = JSON.parse(JSON.stringify(item2))
         tabel.name = data.testCase.name

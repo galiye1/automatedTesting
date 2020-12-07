@@ -37,15 +37,20 @@
                     <a-checkbox value="firefox">firefox</a-checkbox>
                   </a-checkbox-group>
               </a-form-model-item>
-<!--              <a-form-model-item class="cookieTitle" label="cookie">-->
-<!--              </a-form-model-item>-->
-<!--             <a-form-model-item class="cookieKey" label="cookieKey:" prop="cookieKey">-->
-<!--                 <a-input class="cookieInp" v-model="form.cookieKey"/>-->
-<!--             </a-form-model-item>-->
-<!--              <a-form-model-item label="cookieValue:" prop="cookieValue">-->
-<!--                <a-input class="cookieInp" v-model="form.cookieValue"/>-->
-<!--              </a-form-model-item>-->
-              <a-form-model-item label="" prop="headlessType">
+<!--              <div class="cookieList">-->
+<!--                <div v-for="(item, index) in cookieList" :key="index">-->
+<!--                  <a-form-model-item class="cookieKey" label="cookieKey:" :prop="'cookieKey'+index">-->
+<!--                    <a-input class="cookieInp" v-model="form.cookieKey[index]"/>-->
+<!--                  </a-form-model-item>-->
+<!--                  <a-form-model-item class="cookieValue" label="cookieValue:" :prop="'cookieValue'+index">-->
+<!--                    <a-input class="cookieInp" v-model="form.cookieValue[index]"/>-->
+<!--                  </a-form-model-item>-->
+<!--                  <a-form-model-item class="cookieAdd" v-if="item">-->
+<!--                    <a-icon type="plus-square" :style="{fontSize: '20px'}" @click="cookieAdd(index + 1)"/>-->
+<!--                  </a-form-model-item>-->
+<!--                </div>-->
+<!--              </div>-->
+              <a-form-model-item label="是否静默测试" prop="headlessType">
                 <a-radio-group v-model="form.headlessType">
                   <a-radio value="false">非静默测试</a-radio>
                   <a-radio value="true">静默测试</a-radio>
@@ -96,21 +101,22 @@ export default {
       terminalOptions: ['本机'],
       testExampleCache: [],
       file: '',
-      cookie: {},
+      cookie: [{ cookieKey: '', cookieValue: '' }],
       form: {
         terminalType: [],
         browserType: [],
-        cookieKey: '',
-        cookieValue: '',
+        cookieKey: [],
+        cookieValue: [],
         headlessType: ''
       },
       rules: {
         terminalType: [{ type: 'array', required: true, message: '请配置终端', trigger: 'change' }],
         browserType: [{ type: 'array', required: true, message: '请配置浏览器', trigger: 'change' }],
-        cookieKey: [{ required: false, message: '请输入key', trigger: 'blur' }],
-        cookieValue: [{ message: '请输入Value', trigger: 'blur' }],
+        cookieKey0: [{ required: false, message: '请输入key', trigger: 'blur' }],
+        cookieValue0: [{ required: false, message: '请输入Value', trigger: 'blur' }],
         headlessType: [{ required: true, message: '请配置是否需要静默测试', trigger: 'change' }]
-      }
+      },
+      cookieList: [true]
     }
   },
   methods: {
@@ -164,14 +170,23 @@ export default {
       this.testAllSet.browser = this.form.browserType
       this.$store.state.browserConfig = this.testAllSet.browser
       this.$store.state.headless = this.form.headlessType == 'true'
-      this.cookie.cookieKey = this.form.cookieKey
-      this.cookie.cookieValue = this.form.cookieValue
-      if (this.cookie.cookieKey == '' && this.cookie.cookieValue != '') {
-        this.rules.cookieKey[0].required = true
-        this.onSubmitForm()
-        this.rules.cookieKey[0].required = false
-        return
+      for (let i = 0; i < this.cookie.length; i++) {
+        if (!this.form.cookieKey[i] && this.form.cookieValue[i]) {
+          this.rules['cookieKey' + i][0].required = true
+          this.onSubmitForm()
+          this.rules['cookieKey' + i][0].required = false
+          return
+        }
       }
+      for (let i = 0; i < this.cookie.length; i++) {
+        if (this.form.cookieKey[i]) {
+          this.cookie[i].cookieKey = this.form.cookieKey[i]
+        }
+        if (this.form.cookieValue[i]) {
+          this.cookie[i].cookieValue = this.form.cookieValue[i]
+        }
+      }
+      console.log(this.cookie)
       this.$store.state.cookie = this.cookie
       this.envSet = false
       this.$router.push({ path: '/Process' })
@@ -205,6 +220,12 @@ export default {
       } else {
         alert('请选择用例')
       }
+    },
+    cookieAdd (index) {
+      this.cookieList[this.cookieList.length - 1] = false
+      this.cookieList.push(true)
+      this.cookie.push({ cookieKey: '', cookieValue: '' })
+      this.rules['cookieKey' + index] = [{ required: false, message: '请输入key', trigger: 'blur' }]
     }
   },
   mounted () {

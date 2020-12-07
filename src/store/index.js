@@ -16,7 +16,7 @@ export default new Vuex.Store({
     browserConfig: [],
     headless: false,
     exampleIdList: [],
-    cookie: {}
+    cookie: []
   },
   mutations: {
     setId (state, id) {
