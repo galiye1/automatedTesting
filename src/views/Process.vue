@@ -76,15 +76,17 @@ export default {
         //   data.params[0].value = this.$store.state.cookie.cookieValue
         // }
         for (let i = 0; i < this.$store.state.cookie.length; i++) {
-          data.params.push({ type: 'cookies', name: this.$store.state.cookie[i].cookieKey, value: this.$store.state.cookie[i].cookieValue })
+          if (this.$store.state.cookie[i].cookieKey != '' || this.$store.state.cookie[i].cookieValue != '') {
+            data.params.push({ type: 'cookies', name: this.$store.state.cookie[i].cookieKey, value: this.$store.state.cookie[i].cookieValue })
+          }
         }
         data.testCase = JSON.parse(JSON.stringify(item2))
         tabel.name = data.testCase.name
         tabel.test = '未测试'
 
-        //生成测试数据
+        // 生成测试数据
         this.testData.push(data)
-        //生成渲染数据
+        // 生成渲染数据
         this.tabelData.push(tabel)
       })
     })
@@ -128,13 +130,13 @@ export default {
             this.tabelData[this.step - 1].test = '测试完成'
           }
         }, 2000)
-      }else {
+      } else {
         this.detail = JSON.parse(e.data)
       }
     },
-    detailChose(index){
+    detailChose (index) {
       this.detail = this.stepsDetail[index]
-      this.useTime = this.stepsDetail[index]['costTime']
+      this.useTime = this.stepsDetail[index].costTime
     },
     sendData (index) {
       this.detail.steps = []
@@ -142,7 +144,7 @@ export default {
         this.tabelData[0].test = '测试中'
       } else {
         this.tabelData[index - 1].test = '测试完成'
-        if(this.tabelData[index]){
+        if (this.tabelData[index]) {
           this.tabelData[index].test = '测试中'
         }
       }
