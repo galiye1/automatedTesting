@@ -103,11 +103,11 @@ export default {
       file: '',
       cookie: [{ cookieKey: '', cookieValue: '' }],
       form: {
-        terminalType: [],
+        terminalType: ['本机'],
         browserType: [],
         cookieKey: [],
         cookieValue: [],
-        headlessType: ''
+        headlessType: 'false'
       },
       rules: {
         terminalType: [{ type: 'array', required: true, message: '请配置终端', trigger: 'change' }],
