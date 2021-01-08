@@ -1,4 +1,4 @@
-# seleniumide1
+# automatedTesting
 
 ## Project setup
 ```
