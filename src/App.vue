@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div id="app">
       <el-container>
         <el-header>
@@ -21,8 +21,6 @@
 <script>
 export default {
   name: 'App',
-  mounted () {
-  },
   methods: {
     back () {
       this.$router.push('/')
